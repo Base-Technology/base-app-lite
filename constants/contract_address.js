@@ -1,0 +1,6 @@
+export const FactoryAddress = "0x874F95BA3Ee5ffcFe65b683DcbfD81536Fb97C3F";
+export const baseHubContractAddress = '0x47D84939034538b3F455637757985Fb7Ea4dA47c'
+export const profileCreationProxyAddr = '0x710916b69ce96B39385221b977277D7C4de95C11'
+export const walletContractAddress = "0x241424D13a8515DE0a800E3b80C52A11Ed801552"
+export const walletModuleAddress = "0x0B9696458d46A9dF39De0cA2b22171D6404e295b"
+export const freeCollectModuleAddr = "0xD49a22F5174fB857498DA166c9fC435a5a1578B0"
