@@ -15,6 +15,7 @@ import SettingsScreen from './pages/chat/detail';
 import DetailGroupScreen from './pages/chat/detailGroup';
 import LoginScreen from './pages/login';
 import LoginOtherScreen from './pages/login/other';
+import UserInfoScreen from './pages/login/userinfo';
 import SettingsScreen2 from './pages/chat/detailp';
 import SearchScreen from './pages/home/search';
 import SearchDetailScreen from './pages/home/searchDetail';
@@ -107,13 +108,17 @@ export default function App(logined, hasWallet) {
         <IconRegistry icons={EvaIconsPack} />
         <ApplicationProvider {...eva} theme={{ ...eva.dark }}>
           <NavigationContainer
-            theme={MyTheme}
           >
             <Stack.Navigator >
-              {!logined && (<Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Login" component={LoginScreen} />)}
+              {/* {!logined && (<Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Login" component={LoginScreen} />)}
               {!logined && (<Stack.Screen options={{ headerShown: false, animation: 'none' }} name="LoginOther" component={LoginOtherScreen} />)}
-              {!hasWallet && (<Stack.Screen options={{ headerShown: false, animation: 'none' }} name="WalletCreate" component={WalletCreate} />)}
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Home" component={HomeScreen} />
+              {!hasWallet && (<Stack.Screen options={{ headerShown: false, animation: 'none' }} name="WalletCreate" component={WalletCreate} />)} */}
+              {/* <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Home" component={HomeScreen} /> */}
+              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="LoginOther" component={LoginOtherScreen} />
+              
+              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Login" component={LoginScreen} />
+              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="UserInfo" component={UserInfoScreen} />
+              
               <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Chat" component={Chat} />
               <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Doctor" component={SettingsScreen} />
               <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Personal" component={Personal} />

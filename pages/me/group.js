@@ -34,10 +34,10 @@ export default function Example(props) {
                 <View style={{ margin: 20, marginTop: 60, flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                     <View style={{ flexDirection: 'row' }}>
                         <View style={{ width: 50, height: 50, borderRadius: 40, marginRight: 10 }}>
-                            <Image
+                            {/* <Image
                                 style={{ width: 50, height: 50, borderRadius: 100, }}
                                 source={{ uri: header }}
-                            />
+                            /> */}
                         </View>
                         <View style={{ marginLeft: 10 }}>
                             <Text style={{ fontSize: 18 }}>{name}</Text>
@@ -63,7 +63,7 @@ export default function Example(props) {
                     </View>
                 </View>
                 <View style={{ margin: 20, marginTop: 0 }}>
-                    <Text style={{ fontSize: 14 }}>
+                    <Text style={{ fontSize: 14,color:'#fff' }}>
                         {name} is an Ethereum zkRollup using zkEVM (zero-knowledge Ethereum Virtual Machine) and zk-FOAKs (zero-knowledge Fast Objective Argument of Knowledge).
                     </Text>
                 </View>
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     },
     box: {
         marginLeft:20,
-        backgroundColor: '#422DDD',
+        backgroundColor: '#fff',
         height: 25,
         paddingHorizontal:10,
         display: 'flex',
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
         borderRadius: 100,
     },
     boxText: {
-        color: 'white',
+        color: '#000',
         fontSize: 14,
     },
 });

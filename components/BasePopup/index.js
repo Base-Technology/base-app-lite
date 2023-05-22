@@ -26,14 +26,14 @@ const BasePopup = (props) => {
     if (offSetY > (dh / 2) || offSetDy > 200) {
       Animated.spring(
         pan,
-        { toValue: { x: 0, y: dh + 20 } } // Back to zero
+        { toValue: { x: 0, y: dh + 50 } } // Back to zero
       ).start();
       setSelfVisible(false);
       onCancel && onCancel();
     }
   }
 
-  const pan = React.useRef(new Animated.ValueXY({ x: 0, y: dh })).current;
+  const pan = React.useRef(new Animated.ValueXY({ x: 0, y: dh+10 })).current;
   const panResponder = React.useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: (evt, gestureState) => {
@@ -90,7 +90,7 @@ const BasePopup = (props) => {
             setSelfVisible(false);
             onCancel && onCancel();
           }}>
-          <View style={{ width: dw, height: dh, opacity: 0.8, backgroundColor: '#000', zIndex: 2, position: 'absolute' }}>
+          <View style={{ width: dw, height: dh, opacity: 0.8, backgroundColor: '#fff', zIndex: 2, position: 'absolute' }}>
 
           </View>
         </TouchableWithoutFeedback>
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 3,
     top: 0,
-    backgroundColor: '#1e1e1e',
+    backgroundColor: '#fff',
     width: dw,
     height: dh
   }

@@ -32,33 +32,10 @@ const GET_DATA = gql`
 const dw = Dimensions.get('window').width;
 const dh = Dimensions.get('window').height;
 const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba1',
-    name: '1ich',
-    content: 'Ok!',
-    header: 'https://bf.jdd001.top/cryptologos/1inch.png'
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba2',
-    name: 'Pancakeswap',
-    content: '....',
-    header: 'https://bf.jdd001.top/cryptologos/pancakeswap.png'
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba3',
-    name: 'Polkadot',
-    content: 'no',
-    header: 'https://bf.jdd001.top/cryptologos/polkadot.png'
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba4',
-    name: 'Solana',
-    content: 'TouchableWithoutFeedback',
-    header: 'https://bf.jdd001.top/cryptologos/solana.png'
-  },
+  
   {
     id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba611',
-    name: 'Tom',
+    name: 'ChatGPT',
     type: 2,
     content: 'https://akveo.github.io/react-native-ui-kitten',
     header: 'https://bf.jdd001.top/cryptologos/only.png'
@@ -115,7 +92,7 @@ const Item = ({ name, content, navigation, header, type, onShowInfo }) => {
           </View>
         </View>
         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start' }}>
-          {/* <View style={{backgroundColor:'#fff',height:20,minWidth:20,borderRadius:100,marginRight:10}}>
+          {/* <View style={{backgroundColor:'#000',height:20,minWidth:20,borderRadius:100,marginRight:10}}>
             <Text style={{textAlign:'center'}}>3</Text>
           </View> */}
           <Text style={styles.time}>9:08</Text>
@@ -169,7 +146,7 @@ const Chat = ({ navigation }) => {
     <TouchableWithoutFeedback
       onPress={() => setVisible(true)}>
       <View>
-        <AddIcon width={25} height={25} fill="#fff" />
+        <AddIcon width={25} height={25} fill="#000" />
       </View>
     </TouchableWithoutFeedback>
   );
@@ -183,7 +160,7 @@ const Chat = ({ navigation }) => {
           <View style={{ position: 'absolute', right: 0, flexDirection: 'row' }}>
             <TouchableWithoutFeedback
               onPress={() => navigation.navigate('ContactSearch')}>
-              <SearchIcon style={{ marginRight: 10 }} width={30} height={30} fill="#fff" />
+              <SearchIcon style={{ marginRight: 10 }} width={30} height={30} fill="#000" />
             </TouchableWithoutFeedback>
             <Popover
               anchor={renderToggleButton}
@@ -201,7 +178,7 @@ const Chat = ({ navigation }) => {
                     onPress={() => navigation.navigate('CreateGroup')}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.1)', padding: 5 }}>
                       <View style={{ flexDirection: 'column', justifyContent: 'center', marginRight: 10 }}>
-                        <AddGroupIcon width={25} height={25} fill="#fff" />
+                        <AddGroupIcon width={25} height={25} fill="#000" />
 
                       </View>
                       <Text>Create Group</Text>
@@ -211,7 +188,7 @@ const Chat = ({ navigation }) => {
                     onPress={() => navigation.navigate('CreateChat')}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.1)', padding: 5 }}>
                       <View style={{ flexDirection: 'column', justifyContent: 'center', marginRight: 10 }}>
-                        <AddGroupIcon width={25} height={25} fill="#fff" />
+                        <AddGroupIcon width={25} height={25} fill="#000" />
 
                       </View>
                       <Text>New Chat</Text>
@@ -225,7 +202,7 @@ const Chat = ({ navigation }) => {
 
         </View>
         {/* <View style={{ backgroundColor: 'black', marginTop: 10, padding: 5, borderRadius: 3 }}>
-          <TextInput style={{ padding: 0, color: '#fff' }} placeholderTextColor="#8c8c8c" placeholder={'Search'} />
+          <TextInput style={{ padding: 0, color: '#000' }} placeholderTextColor="#8c8c8c" placeholder={'Search'} />
         </View> */}
 
       </View>
@@ -235,27 +212,13 @@ const Chat = ({ navigation }) => {
         renderItem={renderItem}
         keyExtractor={item => item.id}
       />
-      <View style={{ flexDirection: 'row', height: 20, alignItems: 'center', justifyContent: 'space-around', paddingVertical: 20 }}>
-        <TouchableWithoutFeedback onPress={() => navigation.navigate('Home')}>
-          <HomeIcon width={30} height={30} fill={"#fff"} />
-        </TouchableWithoutFeedback>
-        <ChatFullIcon width={30} height={30} fill={"#fff"} />
-        <TouchableWithoutFeedback onPress={() => navigation.navigate('Publish')}>
-          <CreateIcon width={30} height={30} fill={"#fff"} />
-        </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback onPress={() => navigation.navigate('Moment')}>
-          <MomentIcon width={30} height={30} fill={"#fff"} />
-        </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback onPress={() => navigation.navigate('Me')}>
-          <MeIcon width={30} height={30} fill={"#fff"} />
-        </TouchableWithoutFeedback>
-      </View>
+      
       <BasePopup
         visible={visibleInfo}
         onCancel={() => setVisibleInfo(false)}
       >
         <View style={{ flexDirection: 'row', justifyContent: 'center', position: 'absolute', width: dw, top: -10 }}>
-          <View style={{ width: 70, height: 3, backgroundColor: '#fff', borderRadius: 10 }}>
+          <View style={{ width: 70, height: 3, backgroundColor: '#000', borderRadius: 10 }}>
 
           </View>
         </View>
@@ -289,14 +252,14 @@ const Chat = ({ navigation }) => {
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', margin: 20, marginTop: 0 }}>
             <View style={{ flexDirection: 'row' }}>
-              <Text style={{ marginLeft: 5, marginRight: 15, fontSize: 16, color: '#fff' }}>$999 <Text>Treasury</Text></Text>
-              <Text style={{ marginLeft: 5, fontSize: 16, color: '#fff' }}>34 <Text>Members</Text></Text>
+              <Text style={{ marginLeft: 5, marginRight: 15, fontSize: 16, color: '#000' }}>$999 <Text>Treasury</Text></Text>
+              <Text style={{ marginLeft: 5, fontSize: 16, color: '#000' }}>34 <Text>Members</Text></Text>
             </View>
 
             <TouchableWithoutFeedback onPress={() => props.navigation.navigate('Invite')}>
               <View>
                 <MenuItemCustomFrist title="Invite">
-                  <InviteIcon width={25} height={25} fill="#fff" style={{ marginRight: 5 }} />
+                  <InviteIcon width={25} height={25} fill="#000" style={{ marginRight: 5 }} />
                 </MenuItemCustomFrist>
               </View>
             </TouchableWithoutFeedback>
@@ -325,14 +288,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    color: '#fff'
+    // color: '#000'
   },
   content: {
     flex: 1,
-    color: 'rgba(255,255,255,0.6)'
+    // color: 'rgba(255,255,255,0.6)'
   },
   time: {
-    color: '#fff',
+    // color: '#000',
     fontSize: 12
   }
 });

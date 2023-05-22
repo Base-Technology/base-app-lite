@@ -71,7 +71,7 @@ function MessageItem(props) {
             borderBottomLeftRadius: msg.is_send == 0 ? 0 : undefined,
             borderBottomRightRadius: msg.is_send == 0 ? undefined : 0,
           }}>
-            <Text style={{ color: '#fff', fontSize: 14 }}>{msg.content}</Text>
+            <Text style={{ color: '#000', fontSize: 14 }}>{msg.content}</Text>
           </View>
           {msg.is_send == 0 && (<Text style={{ paddingHorizontal: 10, color: 'rgba(255,255,255,0.3)', fontSize: 12, textAlign: 'center', marginLeft: 20, }}>{moment.unix(msg.timestamp / 1000).format('HH:mm')}</Text>)}
           {msg.is_send == 1 && (
@@ -106,27 +106,27 @@ function MessageItem(props) {
       <View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 5, padding: 5 }}>
           <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
-            <ReplyIcon width={25} height={25} fill="#fff" />
+            <ReplyIcon width={25} height={25} fill="#000" />
             <Text>Reply</Text>
           </View>
           <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
-            <EditIcon width={25} height={25} fill="#fff" />
+            <EditIcon width={25} height={25} fill="#000" />
             <Text>Edit</Text>
           </View>
           <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
-            <CopyIcon width={25} height={25} fill="#fff" />
+            <CopyIcon width={25} height={25} fill="#000" />
             <Text>Copy</Text>
           </View>
           <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-            <ForwardIcon width={25} height={25} fill="#fff" />
+            <ForwardIcon width={25} height={25} fill="#000" />
             <Text>Forward</Text>
           </View>
           <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
-            <DeleteIcon width={25} height={25} fill="#fff" />
+            <DeleteIcon width={25} height={25} fill="#000" />
             <Text>Delete</Text>
           </View>
           <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
-            <SelectIcon width={25} height={25} fill="#fff" />
+            <SelectIcon width={25} height={25} fill="#000" />
             <Text>Select</Text>
           </View>
         </View>
@@ -188,7 +188,7 @@ function MessageList(props) {
       <VoiceIcon width={30} height={30} fill="rgba(255,255,255,0.7)" />
       <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, padding: 10, borderRadius: 100, backgroundColor: 'rgba(255,255,255,0.05)', height: 40, marginLeft: 10, marginRight: 10 }}>
         <TextInput
-          style={{ height: 40, borderColor: 'gray', color: '#fff', flex: 1 }}
+          style={{ height: 40, borderColor: 'gray', color: '#000', flex: 1 }}
           onChangeText={text => onChangeText(text)}
           value={value}
         />
@@ -242,7 +242,7 @@ const Moments = (props) => {
       <Text style={{ fontSize: 14 }}>{title}</Text>
     </View>
     <View>
-      <ArrowRightIcon width={25} height={25} fill="#fff" />
+      <ArrowRightIcon width={25} height={25} fill="#000" />
     </View>
   </View>
   const MenuItemCustomFrist = ({ title, children }) => <View style={{ padding: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
@@ -302,7 +302,7 @@ const Moments = (props) => {
       negotiatePan
     >
       {/*主内容区*/}
-      <View style={{ position: 'relative', backgroundColor: '#1e1e1e' }}>
+      <View style={{ position: 'relative', backgroundColor: '#fff' }}>
         {/* <TouchableWithoutFeedback onPress={() => props.navigation.navigate(props.route.params.type != 2 && 'DetailGroup' || 'Personal', props.route.params)}> */}
         <View
           style={{
@@ -315,7 +315,7 @@ const Moments = (props) => {
               <TouchableWithoutFeedback
                 onPress={() => props.navigation.goBack()}
               >
-                <BackIcon width={25} height={25} fill="#fff" />
+                <BackIcon width={25} height={25} fill="#000" />
               </TouchableWithoutFeedback>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -325,11 +325,11 @@ const Moments = (props) => {
               />
               <View style={{ marginLeft: 5 }}>
                 <View>
-                  <Text style={{ color: '#fff', fontSize: 16 }}>{props.route.params.name} {props.route.params.type != 2 && 'Official Group'}</Text>
+                  <Text style={{ color: '#000', fontSize: 16 }}>{props.route.params.name} {props.route.params.type != 2 && 'Official Group'}</Text>
                 </View>
                 <View style={{ flexDirection: 'row' }}>
-                  <Text style={{ color: '#fff', fontSize: 8, }}>$999 <Text style={{ fontSize: 8, }}>Treasury</Text></Text>
-                  <Text style={{ marginLeft: 5, color: '#fff', fontSize: 8, }}>34 <Text style={{ fontSize: 8, }}>Members</Text></Text>
+                  <Text style={{ color: '#000', fontSize: 8, }}>$999 <Text style={{ fontSize: 8, }}>Treasury</Text></Text>
+                  <Text style={{ marginLeft: 5, color: '#000', fontSize: 8, }}>34 <Text style={{ fontSize: 8, }}>Members</Text></Text>
                 </View>
               </View>
             </View>
@@ -339,13 +339,13 @@ const Moments = (props) => {
               onPress={() => {
                 setVisible(true);
               }}>
-              <View><MoreVerIcon width={25} height={25} fill='#fff' /></View>
+              <View><MoreVerIcon width={25} height={25} fill='#000' /></View>
             </TouchableWithoutFeedback>
           </View>
         </View>
         {/* </TouchableWithoutFeedback> */}
       </View>
-      <View style={{ flex: 1, backgroundColor: '#1e1e1e' }}>
+      <View style={{ flex: 1, backgroundColor: '#fff' }}>
         <MessageList {...props} key="s1" />
       </View>
       <BasePopup
@@ -353,7 +353,7 @@ const Moments = (props) => {
         onCancel={() => setVisible(false)}
       >
         <View style={{ flexDirection: 'row', justifyContent: 'center', position: 'absolute', width: dw, top: -10 }}>
-          <View style={{ width: 70, height: 3, backgroundColor: '#fff', borderRadius: 10 }}>
+          <View style={{ width: 70, height: 3, backgroundColor: '#000', borderRadius: 10 }}>
 
           </View>
         </View>
@@ -387,50 +387,50 @@ const Moments = (props) => {
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', margin: 20, marginTop: 0 }}>
             <View style={{ flexDirection: 'row' }}>
-              <Text style={{ marginLeft: 5, marginRight: 15, fontSize: 16, color: '#fff' }}>$999 <Text>Treasury</Text></Text>
-              <Text style={{ marginLeft: 5, fontSize: 16, color: '#fff' }}>34 <Text>Members</Text></Text>
+              <Text style={{ marginLeft: 5, marginRight: 15, fontSize: 16, color: '#000' }}>$999 <Text>Treasury</Text></Text>
+              <Text style={{ marginLeft: 5, fontSize: 16, color: '#000' }}>34 <Text>Members</Text></Text>
             </View>
 
             <TouchableWithoutFeedback onPress={() => props.navigation.navigate('Invite')}>
               <View>
                 <MenuItemCustomFrist title="Invite">
-                  <InviteIcon width={25} height={25} fill="#fff" style={{ marginRight: 5 }} />
+                  <InviteIcon width={25} height={25} fill="#000" style={{ marginRight: 5 }} />
                 </MenuItemCustomFrist>
               </View>
             </TouchableWithoutFeedback>
           </View>
         </View>
         <MenuItemCustom title="Search">
-          <SearchIcon width={25} height={25} fill="#fff" style={{ marginRight: 10 }} />
+          <SearchIcon width={25} height={25} fill="#000" style={{ marginRight: 10 }} />
         </MenuItemCustom>
         <TouchableWithoutFeedback onPress={() => props.navigation.navigate('CreateToken')}>
           <View>
             <MenuItemCustom title="Create Token">
-              <TokenIcon width={25} height={25} fill="#fff" style={{ marginRight: 10 }} />
+              <TokenIcon width={25} height={25} fill="#000" style={{ marginRight: 10 }} />
             </MenuItemCustom>
           </View>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={() => props.navigation.navigate('CreateAirdrop')}>
           <View>
             <MenuItemCustom title="Create Airdrop">
-              <AirdropIcon width={25} height={25} fill="#fff" style={{ marginRight: 10 }} />
+              <AirdropIcon width={25} height={25} fill="#000" style={{ marginRight: 10 }} />
             </MenuItemCustom>
           </View>
         </TouchableWithoutFeedback>
         <MenuItemCustom title="Administrators">
-          <ManageIcon width={25} height={25} fill="#fff" style={{ marginRight: 10 }} />
+          <ManageIcon width={25} height={25} fill="#000" style={{ marginRight: 10 }} />
         </MenuItemCustom>
         <MenuItemCustom title="Members">
-          <GroupIcon width={25} height={25} fill="#fff" style={{ marginRight: 10 }} />
+          <GroupIcon width={25} height={25} fill="#000" style={{ marginRight: 10 }} />
         </MenuItemCustom>
         <MenuItemCustom title="Mute Notification">
-          <NotificationsIcon width={25} height={25} fill="#fff" style={{ marginRight: 10 }} />
+          <NotificationsIcon width={25} height={25} fill="#000" style={{ marginRight: 10 }} />
         </MenuItemCustom>
         <MenuItemCustom title="Group Type">
-          <GroupTypeIcon width={25} height={25} fill="#fff" style={{ marginRight: 10 }} />
+          <GroupTypeIcon width={25} height={25} fill="#000" style={{ marginRight: 10 }} />
         </MenuItemCustom>
         <MenuItemCustom title="Leave Group">
-          <LeaveIcon width={25} height={25} fill="#fff" style={{ marginRight: 10 }} />
+          <LeaveIcon width={25} height={25} fill="#000" style={{ marginRight: 10 }} />
         </MenuItemCustom>
       </BasePopup>
     </Drawer>
