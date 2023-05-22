@@ -14,7 +14,7 @@ import DetailsScreen2 from './pages/home/details2';
 import SettingsScreen from './pages/chat/detail';
 import DetailGroupScreen from './pages/chat/detailGroup';
 import LoginScreen from './pages/login';
-import LoginOtherScreen from './pages/login/other';
+import RegisterScreen from './pages/login/register';
 import SettingsScreen2 from './pages/chat/detailp';
 import SearchScreen from './pages/home/search';
 import SearchDetailScreen from './pages/home/searchDetail';
@@ -40,7 +40,7 @@ import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import SplashScreen from "react-native-splash-screen";
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
-
+import { ThemeContext } from './theme-context';
 const client = new ApolloClient({
   uri: 'http://147.182.251.92:10000/subgraphs/name/base/base-graph',
   cache: new InMemoryCache(),
@@ -102,44 +102,53 @@ export default function App(logined, hasWallet) {
     React.useEffect(() => {
       SplashScreen.hide();
     }, []);
+    const [theme, setTheme] = React.useState('light');
+
+    const toggleTheme = () => {
+      const nextTheme = theme === 'light' ? 'dark' : 'light';
+      setTheme(nextTheme);
+
+    };
     return (
       <ApolloProvider client={client}>
         <IconRegistry icons={EvaIconsPack} />
-        <ApplicationProvider {...eva} theme={{ ...eva.dark }}>
-          <NavigationContainer
-            theme={MyTheme}
-          >
-            <Stack.Navigator >
-              {!logined && (<Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Login" component={LoginScreen} />)}
-              {!logined && (<Stack.Screen options={{ headerShown: false, animation: 'none' }} name="LoginOther" component={LoginOtherScreen} />)}
-              {!hasWallet && (<Stack.Screen options={{ headerShown: false, animation: 'none' }} name="WalletCreate" component={WalletCreate} />)}
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Home" component={HomeScreen} />
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Chat" component={Chat} />
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Doctor" component={SettingsScreen} />
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Personal" component={Personal} />
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Invite" component={Invite} />
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="CreateGroup" component={CreateGroup} />
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="CreateChat" component={CreateChat} />
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="CreateToken" component={CreateToken} />
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="CreateAirdrop" component={CreateAirdrop} />
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="ImportOfAirdrop" component={ImportOfAirdrop} />
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Contact" component={Contact} />
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="ContactSearch" component={ContactSearch} />
+        <ThemeContext.Provider value={{ theme, toggleTheme }}>
+          <ApplicationProvider {...eva} theme={eva[theme]}>
+            <NavigationContainer
+              // theme={MyTheme}
+            >
+              <Stack.Navigator >
+                {!logined && (<Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Login" component={LoginScreen} />)}
+                {!logined && (<Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Register" component={RegisterScreen} />)}
+                {!hasWallet && (<Stack.Screen options={{ headerShown: false, animation: 'none' }} name="WalletCreate" component={WalletCreate} />)}
+                <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Home" component={HomeScreen} />
+                <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Chat" component={Chat} />
+                <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Doctor" component={SettingsScreen} />
+                <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Personal" component={Personal} />
+                <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Invite" component={Invite} />
+                <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="CreateGroup" component={CreateGroup} />
+                <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="CreateChat" component={CreateChat} />
+                <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="CreateToken" component={CreateToken} />
+                <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="CreateAirdrop" component={CreateAirdrop} />
+                <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="ImportOfAirdrop" component={ImportOfAirdrop} />
+                <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Contact" component={Contact} />
+                <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="ContactSearch" component={ContactSearch} />
 
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="DetailGroup" component={DetailGroupScreen} />
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Yk" component={SettingsScreen2} />
-              <Stack.Screen name="Trade" component={TradeScreen} />
-              <Stack.Screen name="Send" component={SendScreen} />
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Search" component={SearchScreen} />
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="SearchDetail" component={SearchDetailScreen} />
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Details" component={DetailsScreen} />
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Details2" component={DetailsScreen2} />
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Publish" component={PublishScreen} />
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Me" component={WalletMain} />
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Moment" component={Moment} />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </ApplicationProvider>
+                <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="DetailGroup" component={DetailGroupScreen} />
+                <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Yk" component={SettingsScreen2} />
+                <Stack.Screen name="Trade" component={TradeScreen} />
+                <Stack.Screen name="Send" component={SendScreen} />
+                <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Search" component={SearchScreen} />
+                <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="SearchDetail" component={SearchDetailScreen} />
+                <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Details" component={DetailsScreen} />
+                <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Details2" component={DetailsScreen2} />
+                <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Publish" component={PublishScreen} />
+                <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Me" component={WalletMain} />
+                <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Moment" component={Moment} />
+              </Stack.Navigator>
+            </NavigationContainer>
+          </ApplicationProvider>
+        </ThemeContext.Provider>
       </ApolloProvider>
     );
   }

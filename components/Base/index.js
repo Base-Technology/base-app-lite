@@ -3,13 +3,18 @@ import BaseVideoFull from '../BaseVideoFull';
 import BaseSwiper from '../BaseSwiper';
 import BaseText from '../BaseText';
 import BaseHeadInfo from '../BaseHeadInfo';
+import BaseForm from '../BaseForm';
+import BaseVCInput from '../BaseVCInput';
+
 
 const Base = {
     BaseVideo,
     BaseSwiper,
     BaseText,
     BaseVideoFull,
-    BaseHeadInfo
+    BaseHeadInfo,
+    BaseForm,
+    BaseVCInput
 };
 export {
     Base as default,
@@ -17,5 +22,7 @@ export {
     BaseSwiper,
     BaseText,
     BaseVideoFull,
-    BaseHeadInfo
+    BaseHeadInfo,
+    BaseForm,
+    BaseVCInput
 };
