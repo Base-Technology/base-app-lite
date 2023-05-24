@@ -10,3 +10,7 @@ configurations.all {
         }
         
     }
+    one:
+ pushy uploadApk android/app/build/outputs/apk/release/app-release.apk
+two:
+pushy bundle --platform android

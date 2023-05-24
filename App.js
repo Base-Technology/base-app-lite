@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Button, ScrollView, Text, Image, TextInput } from 'react-native';
+import { View, Button, ScrollView, Text, Image, TextInput, Platform,Alert,Linking  } from 'react-native';
 import { NavigationContainer, DarkTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -41,7 +41,21 @@ import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import SplashScreen from "react-native-splash-screen";
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
-
+import {
+  isFirstTime,
+  isRolledBack,
+  packageVersion,
+  currentVersion,
+  checkUpdate,
+  downloadUpdate,
+  switchVersion,
+  switchVersionLater,
+  markSuccess,
+  downloadAndInstallApk,
+} from 'react-native-update';
+import { simpleUpdate } from 'react-native-update';
+import _updateConfig from './update.json';
+const { appKey } = _updateConfig[Platform.OS];
 const client = new ApolloClient({
   uri: 'http://147.182.251.92:10000/subgraphs/name/base/base-graph',
   cache: new InMemoryCache(),
@@ -99,10 +113,98 @@ function HomeTabs() {
 const Stack = createNativeStackNavigator();
 
 export default function App(logined, hasWallet) {
+
   return () => {
     React.useEffect(() => {
+      if (isFirstTime) {
+        // 必须调用此更新成功标记方法
+        // 否则默认更新失败，下一次启动会自动回滚
+        markSuccess();
+        console.log('更新完成');
+      } else if (isRolledBack) {
+        console.log('刚刚更新失败了,版本被回滚.');
+      }
       SplashScreen.hide();
+      checkUpdates();
     }, []);
+    doUpdate = async (info) => {
+      try {
+        const hash = await downloadUpdate(info, {
+          onDownloadProgress: ({ received, total }) => {
+            // this.setState({
+            //   received,
+            //   total,
+            // });
+          },
+        });
+        if (!hash) {
+          return;
+        }
+        Alert.alert('提示', '下载完毕,是否重启应用?', [
+          {
+            text: '是',
+            onPress: () => {
+              switchVersion(hash);
+            },
+          },
+          { text: '否' },
+          {
+            text: '下次启动时',
+            onPress: () => {
+              switchVersionLater(hash);
+            },
+          },
+        ]);
+      } catch (err) {
+        Alert.alert('更新失败', err.message);
+      }
+    };
+    checkUpdates = async () => {
+      let info;
+      try {
+        info = await checkUpdate(appKey);
+      } catch (err) {
+        // Alert.alert('更新检查失败', err.message);
+        return;
+      }
+      if (info.expired) {
+        Alert.alert('提示', '您的应用版本已更新，点击确定下载安装新版本', [
+          {
+            text: '确定',
+            onPress: () => {
+              if (info.downloadUrl) {
+                // apk可直接下载安装
+                if (Platform.OS === 'android' && info.downloadUrl.endsWith('.apk')) {
+                  downloadAndInstallApk({
+                    url: info.downloadUrl,
+                    onDownloadProgress: ({ received, total }) => {
+                      // this.setState({
+                      //   received,
+                      //   total,
+                      // });
+                    },
+                  });
+                } else {
+                  Linking.openURL(info.downloadUrl);
+                }
+              }
+            },
+          },
+        ]);
+      } else if (info.upToDate) {
+        // Alert.alert('提示', '您的应用版本已是最新.');
+      } else {
+        Alert.alert('提示', '检查到新的版本' + info.name + ',是否下载?\n' + info.description, [
+          {
+            text: '是',
+            onPress: () => {
+              doUpdate(info);
+            },
+          },
+          { text: '否' },
+        ]);
+      }
+    };
     return (
       <ApolloProvider client={client}>
         <IconRegistry icons={EvaIconsPack} />
@@ -115,11 +217,11 @@ export default function App(logined, hasWallet) {
               {!hasWallet && (<Stack.Screen options={{ headerShown: false, animation: 'none' }} name="WalletCreate" component={WalletCreate} />)} */}
               {/* <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Home" component={HomeScreen} /> */}
               <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="LoginOther" component={LoginOtherScreen} />
-              
+
               <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Login" component={LoginScreen} />
               <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="UserInfo" component={UserInfoScreen} />
-              
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Chat" component={Chat} />
+
+              {/* <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Chat" component={Chat} />
               <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Doctor" component={SettingsScreen} />
               <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Personal" component={Personal} />
               <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Invite" component={Invite} />
@@ -141,7 +243,7 @@ export default function App(logined, hasWallet) {
               <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Details2" component={DetailsScreen2} />
               <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Publish" component={PublishScreen} />
               <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Me" component={WalletMain} />
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Moment" component={Moment} />
+              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Moment" component={Moment} /> */}
             </Stack.Navigator>
           </NavigationContainer>
         </ApplicationProvider>
@@ -150,3 +252,5 @@ export default function App(logined, hasWallet) {
   }
 
 }
+
+// export default simpleUpdate(App, { appKey });

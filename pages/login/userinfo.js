@@ -5,8 +5,9 @@ import ArrowRightIcon from "../../assets/icon_arrow_right.svg";
 import AddIcon from "../../assets/icon_add_big.svg";
 import BackIcon from "../../assets/icon_close.svg";
 import CheckIcon from "../../assets/icon_check.svg";
-import * as ImagePicker from 'react-native-image-picker';
+// import * as ImagePicker from 'react-native-image-picker';
 import { register, verificationCode as sendVerificationCode } from "../../mail/service";
+import ImagePicker from 'react-native-image-crop-picker';
 
 const Login = ({ navigation }) => {
   const [tabsData, setTabsData] = useState([
@@ -26,6 +27,7 @@ const Login = ({ navigation }) => {
   const [password, onChangePassword] = React.useState('');
   const [confirmPassword, onChangeconfirmPassword] = React.useState('');
   const [imgHeader, setImgHeader] = useState('');
+
   useEffect(() => {
     let intervalId;
 
@@ -38,23 +40,31 @@ const Login = ({ navigation }) => {
     return () => clearInterval(intervalId);
   }, [countdown]);
   const onButtonPress = React.useCallback((type, options) => {
+
+    ImagePicker.openPicker({
+      width: 300,
+      height: 300,
+      cropping: true
+    }).then(image => {
+      setImgHeader(()=>image.path)
+    });
     // setModalVisible(true);
     // return;
-    type = 'capture2';
-    options = {
-      saveToPhotos: true,
-      mediaType: 'photo',
-      includeBase64: false,
-      includeExtra: true,
-    };
-    console.log(options)
-    if (type === 'capture') {
-      ImagePicker.launchCamera(options, setResponse);
-    } else {
-      ImagePicker.launchImageLibrary(options, (response) => {
-        setImgHeader(img => response?.assets[0]?.uri)
-      });
-    }
+    // type = 'capture2';
+    // options = {
+    //   saveToPhotos: true,
+    //   mediaType: 'photo',
+    //   includeBase64: false,
+    //   includeExtra: true,
+    // };
+    // console.log(options)
+    // if (type === 'capture') {
+    //   ImagePicker.launchCamera(options, setResponse);
+    // } else {
+    //   ImagePicker.launchImageLibrary(options, (response) => {
+    //     setImgHeader(img => response?.assets[0]?.uri)
+    //   });
+    // }
     // console.log("12345asdfqwerzxcv", imgList)
   }, []);
   return (

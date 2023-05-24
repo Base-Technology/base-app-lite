@@ -5,7 +5,7 @@ import ArrowRightIcon from "../../assets/icon_arrow_right.svg";
 
 import BackIcon from "../../assets/icon_close.svg";
 import CheckIcon from "../../assets/icon_check.svg";
-
+import ImagePicker from 'react-native-image-crop-picker';
 import { register, verificationCode as sendVerificationCode } from "../../mail/service";
 
 const Login = ({ navigation }) => {
@@ -99,7 +99,8 @@ const Login = ({ navigation }) => {
           //   throw new Error("password and confirm password not match");
           // }
           // await register(mail, password, verificationCode);
-          navigation.navigate('Login');
+         navigation.navigate('Login');
+         
         }}>
           <View style={{  padding: 15, borderRadius: 100, width: 300 }}>
             <Text style={{ textAlign: 'center', color: '#000', fontSize: 18 }}>登录</Text>
