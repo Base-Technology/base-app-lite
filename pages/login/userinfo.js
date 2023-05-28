@@ -12,7 +12,7 @@ import { IndexPath, Layout, Select, SelectItem } from '@ui-kitten/components';
 // import * as ImagePicker from 'react-native-image-picker';
 import { register, verificationCode as sendVerificationCode } from "../../mail/service";
 import ImagePicker from 'react-native-image-crop-picker';
-const Data=['清华大学','北京大学'];
+const Data = ['清华大学', '北京大学'];
 const Item = (props) => <View style={{ marginHorizontal: 20, marginVertical: 5 }}>
   {props.children}
 </View>
@@ -84,34 +84,35 @@ const UserInfo = ({ navigation }) => {
         <TextInput placeholder="请输入昵称" value={mail} onChangeText={mail => onChangeMail(mail)} />
       </Item>
       <Item>
-        {/* <Select
+        <Select
           placeholder="请选择性别"
-          value={['女','男'][selectedIndex-1]}
+          value={['女', '男'][selectedIndex - 1]}
           selectedIndex={selectedIndex}
           onSelect={(index) => setSelectedIndex(index)}
         >
           <SelectItem title='女' />
           <SelectItem title='男' />
-        </Select> */}
+        </Select>
       </Item>
       <Item>
         <Datepicker
           placeholder="请选择生日"
+          min={ new Date(new Date().getFullYear()-100, new Date().getMonth(), new Date().getDate())}
           date={date}
           onSelect={nextDate => setDate(nextDate)}
         />
       </Item>
       <Item>
-        {/* <Select
+        <Select
           placeholder="请选择学校"
-          value={Data[selectedIndexSchool.row]}
+          value={Data[selectedIndexSchool?.row]}
           selectedIndex={selectedIndexSchool}
           onSelect={index => setSelectedIndexSchool(index)}
         >
           {
-            Data.map(item=><SelectItem title={item} />)
+            Data.map(item => <SelectItem title={item} />)
           }
-        </Select> */}
+        </Select>
       </Item>
       <View style={{ padding: 20, justifyContent: 'center', flexDirection: 'row' }}>
         <TouchableWithoutFeedback onPress={async () => {
@@ -119,7 +120,7 @@ const UserInfo = ({ navigation }) => {
           //   throw new Error("password and confirm password not match");
           // }
           // await register(mail, password, verificationCode);
-          navigation.navigate('Chat');
+          navigation.navigate('Login');
         }}>
           <View style={{ backgroundColor: '#422ddd', padding: 15, borderRadius: 100, width: 300 }}>
             <Text style={{ textAlign: 'center', color: '#fff', fontSize: 18 }}>完成</Text>

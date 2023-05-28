@@ -18,7 +18,7 @@ const Login = ({ navigation }) => {
       "password": password,
       "phone": tel
     }
-    post('/baseapi/v1/login', data).then(response => {
+    post('/api/v1/login', data).then(response => {
       console.log('response', response);
       if (response.code == "0") {
         navigation.navigate('Chat');
@@ -61,7 +61,7 @@ const Login = ({ navigation }) => {
         </TouchableWithoutFeedback>
       </View>
       <View>
-        <TouchableWithoutFeedback onPress={() => Alert.alert("未开启")}>
+        <TouchableWithoutFeedback onPress={() => navigation.navigate('Retrieve')}>
           <View style={{ marginTop: 30, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
             <View>
               <Text style={{ textAlign: 'center', lineHeight: 20, }}>忘记密码</Text>

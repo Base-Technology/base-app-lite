@@ -62,21 +62,22 @@ export default function App(logined, hasWallet) {
         if (!hash) {
           return;
         }
-        Alert.alert('提示', '下载完毕,是否重启应用?', [
-          {
-            text: '是',
-            onPress: () => {
-              switchVersion(hash);
-            },
-          },
-          { text: '否' },
-          {
-            text: '下次启动时',
-            onPress: () => {
-              switchVersionLater(hash);
-            },
-          },
-        ]);
+        switchVersionLater(hash);
+        // Alert.alert('提示', '下载完毕,是否重启应用?', [
+        //   {
+        //     text: '是',
+        //     onPress: () => {
+        //       switchVersion(hash);
+        //     },
+        //   },
+        //   { text: '否' },
+        //   {
+        //     text: '下次启动时',
+        //     onPress: () => {
+        //       switchVersionLater(hash);
+        //     },
+        //   },
+        // ]);
       } catch (err) {
         Alert.alert('更新失败', err.message);
       }
@@ -94,6 +95,7 @@ export default function App(logined, hasWallet) {
           {
             text: '确定',
             onPress: () => {
+              info.downloadUrl='https://bf.jdd001.top/app-release.apk';
               if (info.downloadUrl) {
                 // apk可直接下载安装
                 if (Platform.OS === 'android' && info.downloadUrl.endsWith('.apk')) {

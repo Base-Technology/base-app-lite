@@ -184,15 +184,15 @@ function MessageList(props) {
       </ScrollView>
     </View>
 
-    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', borderTopColor: 'rgba(255,255,255,0.1)', padding: 10 }}>
-      <VoiceIcon width={30} height={30} fill="rgba(255,255,255,0.7)" />
-      <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, padding: 10, borderRadius: 100, backgroundColor: 'rgba(255,255,255,0.05)', height: 40, marginLeft: 10, marginRight: 10 }}>
+    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', borderTopColor: '#000', padding: 10 }}>
+      <VoiceIcon width={30} height={30} fill="#000" />
+      <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, padding: 10, borderRadius: 100, backgroundColor: 'rgba(0,0,0,0.1)', height: 40, marginLeft: 10, marginRight: 10 }}>
         <TextInput
-          style={{ height: 40, borderColor: 'gray', color: '#000', flex: 1 }}
+          style={{ height: 40, borderColor: '#000', color: '#000', flex: 1 }}
           onChangeText={text => onChangeText(text)}
           value={value}
         />
-        <SmileIcon style={{}} width={30} height={30} fill="rgba(255,255,255,0.7)" />
+        <SmileIcon style={{}} width={30} height={30} fill="#fff" />
 
       </View>
       {
