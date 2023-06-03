@@ -31,7 +31,7 @@ const Login = ({ navigation }) => {
   return (
     <View style={{ height: 760 }}>
       <View style={{ padding: 20 }}>
-        <Text style={{ fontSize: 24, textAlign: 'center', lineHeight: 30 }}>登录1</Text>
+        <Text style={{ fontSize: 24, textAlign: 'center', lineHeight: 30 }}>登录</Text>
       </View>
       <Item>
         <TextInput style={{}} placeholder="请输入手机号" value={tel} onChangeText={tel => setTel(tel)} />
@@ -76,4 +76,7 @@ const Login = ({ navigation }) => {
   )
 }
 export default Login;
+
+
+
 

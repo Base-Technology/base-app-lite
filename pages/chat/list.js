@@ -1,26 +1,15 @@
 import React from 'react';
-import { SafeAreaView, View, FlatList, StyleSheet, Dimensions, TouchableWithoutFeedback, Image, TextInput } from 'react-native';
+import { SafeAreaView, View, FlatList, StyleSheet, Dimensions, TouchableWithoutFeedback, TouchableHighlight, Image } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Avatar, IndexPath, Layout, Popover, Select, SelectItem } from '@ui-kitten/components';
+import { IndexPath } from '@ui-kitten/components';
 import Explore from "../home/explore";
 
-import { Tooltip, Button } from '@ui-kitten/components';
 import AddIcon from "../../assets/icon_create.svg";
-import AddGroupIcon from "../../assets/icon_group_add.svg";
-import HomeIcon from '../../assets/icon_home';
-import ChatFullIcon from '../../assets/icon_chatfull.svg';
-import MeIcon from '../../assets/icon_me.svg';
-import MomentIcon from '../../assets/icon_moment.svg';
-import CreateIcon from '../../assets/icon_add_photo.svg';
-
-
-import SearchIcon from '../../assets/icon_search.svg';
 import InviteIcon from '../../assets/icon_person_add.svg';
 
 import Text from "../../components/BaseText";
 import BasePopup from "../../components/BasePopup";
 import { useQuery, gql } from '@apollo/client';
-import { string } from 'prop-types';
 
 const GET_DATA = gql`
 {
@@ -32,73 +21,48 @@ const GET_DATA = gql`
 const dw = Dimensions.get('window').width;
 const dh = Dimensions.get('window').height;
 const DATA = [
-  
+
   {
     id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba611',
     name: 'ChatGPT',
     type: 2,
-    content: 'https://akveo.github.io/react-native-ui-kitten',
-    header: 'https://bf.jdd001.top/cryptologos/only.png'
+    content: '...',
+    route:'ChatGpt',
+    header: 'https://bf.jdd001.top/cryptologos/chatgpt.png'
   },
   {
     id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba6111',
-    name: 'Austin',
+    name: '鲸馆小张',
     type: 2,
-    content: 'https://akveo.github.io/react-native-ui-kitten',
-    header: 'https://bf.jdd001.top/cryptologos/Austin.jpg'
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba611133',
-    name: 'HeeJu',
-    type: 2,
-    content: 'https://akveo.github.io/react-native-ui-kitten',
-    header: 'https://bf.jdd001.top/cryptologos/HeeJu.jpg'
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba6222',
-    name: 'JoyJY',
-    type: 2,
-    content: 'https://akveo.github.io/react-native-ui-kitten',
-    header: 'https://bf.jdd001.top/cryptologos/JoyJY.jpg'
+    content: '...',
+    header: 'https://bf.jdd001.top/cryptologos/zy.png'
   }
 ];
-const Stack = createNativeStackNavigator();
-const Item = ({ name, content, navigation, header, type, onShowInfo }) => {
+const Item = ({ name, content, navigation, header, type,route, onShowInfo }) => {
 
   return (
-    <TouchableWithoutFeedback
-      underlayColor="rgba(255, 255, 255, 0.08)"
-      onPress={() => navigation.navigate('Doctor', { name, header, type })}
+    <TouchableHighlight
+      underlayColor="rgba(255, 255, 255, 1)"
+      onPress={() => navigation.navigate(route||'Doctor', { name, header, type })}
     >
       <View style={styles.item}>
-
-
         <View style={styles.itemc}>
-          <TouchableWithoutFeedback
-            underlayColor="rgba(255, 255, 255, 0.08)"
-            onPress={() => onShowInfo && onShowInfo({ name, header })}
-          >
-            <View style={{ width: 50, height: 50, borderRadius: 40, backgroundColor: 'gray', marginRight: 10 }}>
-              <Image
-                style={{ width: 50, height: 50, borderRadius: 100, }}
-                source={{ uri: header }}
-              />
-
-            </View>
-          </TouchableWithoutFeedback>
+          <View style={{ width: 50, height: 50, borderRadius: 40, backgroundColor: 'gray', marginRight: 10 }}>
+            <Image
+              style={{ width: 50, height: 50, borderRadius: 100, }}
+              source={{ uri: header }}
+            />
+          </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.title}>{name}</Text>
             <Text numberOfLines={1} ellipsizeMode="tail" style={styles.content}>{content}</Text>
           </View>
         </View>
         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start' }}>
-          {/* <View style={{backgroundColor:'#000',height:20,minWidth:20,borderRadius:100,marginRight:10}}>
-            <Text style={{textAlign:'center'}}>3</Text>
-          </View> */}
           <Text style={styles.time}>9:08</Text>
         </View>
       </View>
-    </TouchableWithoutFeedback>
+    </TouchableHighlight >
   );
 }
 const placements = [
@@ -116,14 +80,8 @@ const placements = [
   'right end',
 ];
 const Chat = ({ navigation }) => {
-  // const get = () => {
-  console.log(1111111111111111111)
+
   const { loading, error, data } = useQuery(GET_DATA);
-  console.log(loading, error, data)
-  // }
-  // React.useEffect(() => {
-  //   get();
-  // }, []);
   const renderItem = ({ item }) => (
     <Item onShowInfo={(head) => { setVisibleInfo(true); setCurrentInfo(head) }} key={item.id + 1} navigation={navigation} {...item} />
   );
@@ -142,69 +100,12 @@ const Chat = ({ navigation }) => {
     </View>
 
   </View>
-  const renderToggleButton = () => (
-    <TouchableWithoutFeedback
-      onPress={() => setVisible(true)}>
-      <View>
-        <AddIcon width={25} height={25} fill="#000" />
-      </View>
-    </TouchableWithoutFeedback>
-  );
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ paddingHorizontal: 15, paddingVertical: 10, }}>
-        {/* <Text>{JSON.stringify(data)}</Text> */}
         <View style={{ position: 'relative' }}>
           <Text style={{ textAlign: 'center', fontSize: 18 }}>Base</Text>
-          <View style={{ position: 'absolute', right: 0, flexDirection: 'row' }}>
-            <TouchableWithoutFeedback
-              onPress={() => navigation.navigate('ContactSearch')}>
-              <SearchIcon style={{ marginRight: 10 }} width={30} height={30} fill="#000" />
-            </TouchableWithoutFeedback>
-            <Popover
-              anchor={renderToggleButton}
-              visible={visible}
-              placement={placement}
-              onBackdropPress={() => setVisible(false)}
-              style={{ backgroundColor: '#1e1e1e', borderWidth: 0 }}
-
-            >
-              <View>
-
-
-                <View>
-                  <TouchableWithoutFeedback
-                    onPress={() => navigation.navigate('CreateGroup')}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.1)', padding: 5 }}>
-                      <View style={{ flexDirection: 'column', justifyContent: 'center', marginRight: 10 }}>
-                        <AddGroupIcon width={25} height={25} fill="#000" />
-
-                      </View>
-                      <Text>Create Group</Text>
-                    </View>
-                  </TouchableWithoutFeedback>
-                  <TouchableWithoutFeedback
-                    onPress={() => navigation.navigate('CreateChat')}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.1)', padding: 5 }}>
-                      <View style={{ flexDirection: 'column', justifyContent: 'center', marginRight: 10 }}>
-                        <AddGroupIcon width={25} height={25} fill="#000" />
-
-                      </View>
-                      <Text>New Chat</Text>
-                    </View>
-                  </TouchableWithoutFeedback>
-
-                </View>
-              </View>
-            </Popover>
-          </View>
-
         </View>
-        {/* <View style={{ backgroundColor: 'black', marginTop: 10, padding: 5, borderRadius: 3 }}>
-          <TextInput style={{ padding: 0, color: '#000' }} placeholderTextColor="#8c8c8c" placeholder={'Search'} />
-        </View> */}
-
       </View>
 
       <FlatList
@@ -212,7 +113,7 @@ const Chat = ({ navigation }) => {
         renderItem={renderItem}
         keyExtractor={item => item.id}
       />
-      
+
       <BasePopup
         visible={visibleInfo}
         onCancel={() => setVisibleInfo(false)}

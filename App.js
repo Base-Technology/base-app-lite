@@ -3,6 +3,7 @@ import { Platform,Alert,Linking  } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SettingsScreen from './pages/chat/detail';
+import ChatGptScreen from './pages/chat/chatgpt';
 import RegisterScreen from './pages/login/register';
 import LoginScreen from './pages/login';
 import UserInfoScreen from './pages/login/userinfo';
@@ -149,6 +150,7 @@ export default function App(logined, hasWallet) {
 
               <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Chat" component={Chat} />
               <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Doctor" component={SettingsScreen} />
+              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="ChatGpt" component={ChatGptScreen} />
               <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Personal" component={Personal} />
               <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Invite" component={Invite} />
               {/* <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="CreateGroup" component={CreateGroup} />

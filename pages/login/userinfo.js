@@ -131,4 +131,3 @@ const UserInfo = ({ navigation }) => {
   )
 }
 export default UserInfo;
-
