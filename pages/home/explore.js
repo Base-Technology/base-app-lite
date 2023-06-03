@@ -17,7 +17,6 @@ import { useQuery, gql } from '@apollo/client';
 import { string } from 'prop-types';
 import { ethers } from "ethers";
 
-import { queryProfile } from "../../database/profile";
 import { Buffer } from 'buffer';
 import { downloadFile, downloadObject } from "../../ipfs/service";
 import { Testbaobab } from "../../constants/test-provider";
@@ -165,12 +164,12 @@ const WalletMain = ({ navigation }) => {
 
   // const user = new ethers.Wallet(pri,Testbaobab)
 
-  const profile =  async() =>{
-    const profile = await queryProfile()
-    let privateKey = profile['private_key']
-    setPrivateKey(privateKey)
-  }
-  profile()
+  // const profile =  async() =>{
+  //   const profile = await queryProfile()
+  //   let privateKey = profile['private_key']
+  //   setPrivateKey(privateKey)
+  // }
+  // profile()
   
 
   const wait = (timeout) => {

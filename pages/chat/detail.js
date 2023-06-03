@@ -10,7 +10,7 @@ import {
   Button,
 } from 'react-native';
 import { BaseText as Text } from "../../components/Base";
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollTabView, ScrollView as NewScrollView, FlatList } from '../../components/BaseHead';
 import BackIcon from "../../assets/icon_arrow_back.svg";
 import { Popover, MenuItem, Tooltip } from '@ui-kitten/components';
@@ -156,11 +156,11 @@ function MessageList(props) {
   const handleContentSizeChange = (contentWidth, contentHeight) => {
     // const scrollViewHeight = scrollViewRef.current?.layoutMeasurement.height;
     // if (scrollViewHeight && contentHeight > scrollViewHeight) {
-      scrollToBottom();
+    scrollToBottom();
     // }
   };
   if (!messages) {
-    queryMessage((msgs) => {
+    queryMessage(undefined, (msgs) => {
       changeMessages(msgs);
     });
   }
@@ -199,9 +199,11 @@ function MessageList(props) {
         value != "" && <Button
           title="Send"
           color="#422DDD"
-          onPress={() => {
+          onPress={async () => {
+            const groupID = await AsyncStorage.getItem('group_id');
             IMTP.getInstance().sendMessage({
-              profile_id: '0x2',
+              recvID: "",
+              groupID: groupID,
               content: value,
             }, (msg) => {
               messages.push(msg);

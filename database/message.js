@@ -1,10 +1,13 @@
 import SQLite from './sqlite';
-import IMTP from "../imtp/service";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export async function queryMessage(callback) {
-    const profile = await IMTP.getInstance().getProfile();
+export async function queryMessage(group_id, callback) {
+    if (!group_id) {
+        group_id = await AsyncStorage.getItem('group_id');
+    }
+    const userID = await AsyncStorage.getItem('user_id');
     const sqlite = SQLite.getInstance();
-    const results = await sqlite.executeSql(`SELECT * FROM "message_${profile.id}" ORDER BY "timestamp"`);
+    const results = await sqlite.executeSql(`SELECT * FROM "message_${userID}" WHERE "group_id" = ? ORDER BY "timestamp"`, [group_id]);
     const messages = [];
     for (let i = 0; i < results.rows.length; i++) {
         const message = results.rows.item(i);
@@ -17,19 +20,24 @@ export async function queryMessage(callback) {
 }
 
 export async function queryLastMessage() {
-    const profile = await IMTP.getInstance().getProfile();
+    const userID = await AsyncStorage.getItem('user_id');
     const sqlite = SQLite.getInstance();
-    const results = await sqlite.executeSql(`SELECT * FROM "message_${profile.id}" ORDER BY "timestamp" DESC limit 1`);
+    const results = await sqlite.executeSql(`SELECT * FROM "message_${userID}" ORDER BY "timestamp" DESC limit 1`);
     return results.rows.item(0);
 }
 
 export async function addMessage(message, callback) {
-    const profile = await IMTP.getInstance().getProfile();
+    const userID = await AsyncStorage.getItem('user_id');
     const sqlite = SQLite.getInstance();
-    const results = await sqlite.executeSql(`INSERT into "message_${profile.id}" VALUES (?,?,?,?,?,?)`,
-        [message.id, message.state, message.timestamp, message.profile_id, message.is_send, message.content],
+    const results = await sqlite.executeSql(`INSERT into "message_${userID}" VALUES (?,?,?,?,?,?,?)`,
+        [message.id, message.state, message.timestamp, message.group_id, message.imtp_user_id, message.is_send, message.content],
     );
     if (callback) {
         callback(message);
     }
+}
+
+export async function createMessageTable(userID) {
+    const sqlite = SQLite.getInstance();
+    await sqlite.createMessageTable(userID);
 }

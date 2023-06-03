@@ -1,4 +1,4 @@
-import React, {  useRef,useEffect,useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
   StyleSheet,
   ScrollView,
@@ -26,10 +26,12 @@ import CopyIcon from '../../assets/icon_copy.svg';
 import ForwardIcon from '../../assets/icon_forward.svg';
 import DeleteIcon from '../../assets/icon_delete.svg';
 import SelectIcon from '../../assets/icon_select.svg';
-import { get,post } from '../../utils/request';
+import { get, post } from '../../utils/request';
 import { queryMessage } from '../../database/message';
 import moment from 'moment';
 import IMTP from '../../imtp/service';
+import { addMessage } from '../../database/message';
+import uuid from 'react-native-uuid';
 const dw = Dimensions.get('window').width;
 const dh = Dimensions.get('window').height;
 // Drawer组件
@@ -143,21 +145,21 @@ function MessageList(props) {
   const handleContentSizeChange = (contentWidth, contentHeight) => {
     // const scrollViewHeight = scrollViewRef.current?.layoutMeasurement.height;
     // if (scrollViewHeight && contentHeight > scrollViewHeight) {
-      scrollToBottom();
+    scrollToBottom();
     // }
   };
   if (!messages) {
-    queryMessage((msgs) => {
+    queryMessage("chatgpt", (msgs) => {
       changeMessages(msgs);
     });
   }
 
-  
+
   // /api/v1/chat/chatgpt
-  const getChatGptMessage=()=>{
-    post('/api/v1/chat/chatgpt',{
-      "prompt":value
-  }).then(response => {
+  const getChatGptMessage = () => {
+    post('/api/v1/chat/chatgpt', {
+      "prompt": value
+    }).then(response => {
       console.log('response', response);
       setLimit(response.total_token_left_count);
     })
@@ -191,20 +193,35 @@ function MessageList(props) {
 
       </View>
       <Button
-          title="发送"
-          color="#422DDD"
-          onPress={() => {
-            getChatGptMessage()
-          }}
-        />
+        title="发送"
+        color="#422DDD"
+        onPress={async () => {
+          const requestID = uuid.v4();
+          await addMessage({
+            id: requestID,
+            state: 0,
+            timestamp: moment().valueOf(),
+            group_id: "chatgpt",
+            imtp_user_id: "",
+            is_send: 1,
+            content: value,
+          }, (msg) => {
+            messages.push(msg);
+            changeMessages(messages);
+            onChangeText('');
+          });
+
+          getChatGptMessage();
+        }}
+      />
 
     </View>
   </View>
     ;
 }
 const Moments = (props) => {
-  const [limit,setLimit]=useState(0);
-  
+  const [limit, setLimit] = useState(0);
+
   const _drawer = useRef(null);
   closeDrawer = () => {
     _drawer.current && _drawer.current.close()
@@ -212,12 +229,12 @@ const Moments = (props) => {
   openDrawer = () => {
     _drawer.current && _drawer.current.open()
   };
-  useEffect(()=>{
-     getChatGptLimit();
-   
+  useEffect(() => {
+    getChatGptLimit();
+
   })
   // /api/v1/chat/chatgpt_limit
-  const getChatGptLimit=()=>{
+  const getChatGptLimit = () => {
     get('/api/v1/chat/chatgpt_limit').then(response => {
       console.log('response', response);
       setLimit(response.total_token_left_count);
@@ -227,7 +244,7 @@ const Moments = (props) => {
 
   return (
     <>
-    <View style={{ position: 'relative', backgroundColor: '#fff' }}>
+      <View style={{ position: 'relative', backgroundColor: '#fff' }}>
         {/* <TouchableWithoutFeedback onPress={() => props.navigation.navigate(props.route.params.type != 2 && 'DetailGroup' || 'Personal', props.route.params)}> */}
         <View
           style={{
@@ -258,7 +275,7 @@ const Moments = (props) => {
               </View>
             </View>
           </View>
-          
+
         </View>
       </View>
       <View style={{ flex: 1, backgroundColor: '#fff' }}>

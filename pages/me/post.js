@@ -21,7 +21,6 @@ import { baseHubContractAddress } from "../../constants/contract_address";
 import { useQuery, gql } from '@apollo/client';
 import { ethers } from "ethers";
 
-import { queryProfile } from "../../database/profile";
 import { downloadFile, downloadObject } from "../../ipfs/service";
 import { provider } from "../../constants/test-provider";
 

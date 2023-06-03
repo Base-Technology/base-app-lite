@@ -36,7 +36,7 @@ const client = new ApolloClient({
 });
 const Stack = createNativeStackNavigator();
 
-export default function App(logined, hasWallet) {
+export default function App(logined) {
 
   return () => {
     const [logined,setLogined]=React.useState(false);

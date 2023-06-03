@@ -23,7 +23,6 @@ import * as ImagePicker from 'react-native-image-picker';
 import { uploadObject,uploadFile } from "../../ipfs/service";
 
 import { post } from "../../connectFunctions/BaseLen/post";
-import { queryProfile } from "../../database/profile";
 import { ethers } from "ethers";
 import { Testbaobab } from "../../constants/test-provider";
 import { baseHubContractAddress, walletContractAddress } from "../../constants/contract_address";
