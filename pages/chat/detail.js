@@ -8,6 +8,7 @@ import {
   Image,
   Dimensions,
   Button,
+  RefreshControl
 } from 'react-native';
 import { BaseText as Text } from "../../components/Base";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -167,7 +168,21 @@ function MessageList(props) {
   const renderPlacementItem = (title) => (
     <Text>ddd</Text>
   );
+  const wait = (timeout) => {
+    return new Promise(resolve => {
+      setTimeout(resolve, timeout);
+    });
+  }
+  const [refreshing, setRefreshing] = React.useState(false);
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    
+    wait(2000).then(() => {
+      setRefreshing(false);
+      
+    });
 
+  }, []);
   return <View style={{ flex: 1 }}>
     <View style={{ flex: 1 }}>
       <ScrollView
@@ -175,6 +190,9 @@ function MessageList(props) {
         ref={scrollViewRef}
         onContentSizeChange={handleContentSizeChange}
         onLayout={handleContentSizeChange}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#422ddd"]} />
+        }
       >
         {messages && messages.map((msg, index) => {
           return (<ItemMessage msg={msg} index={index} key={index} {...props} />)

@@ -104,7 +104,10 @@ const Login = ({ navigation }) => {
     if(response.code == "0"){
       navigation.navigate('Chat');
     }
-    SplashScreen.hide();
+    else{
+      SplashScreen.hide();
+    }
+   
     //  .then(response => {
     //       console.log('response', response);
     //       if (response.code == "0") {
