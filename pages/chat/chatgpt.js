@@ -8,6 +8,7 @@ import {
   Image,
   Dimensions,
   Button,
+  RefreshControl
 } from 'react-native';
 import { BaseText as Text } from "../../components/Base";
 
@@ -162,6 +163,21 @@ function MessageList(props) {
       setLimit(response.total_token_left_count);
     })
   }
+  const wait = (timeout) => {
+    return new Promise(resolve => {
+      setTimeout(resolve, timeout);
+    });
+  }
+  const [refreshing, setRefreshing] = React.useState(false);
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    
+    wait(2000).then(() => {
+      setRefreshing(false);
+      
+    });
+
+  }, []);
   return <View style={{ flex: 1 }}>
     <View style={{ flex: 1 }}>
       <ScrollView
@@ -169,6 +185,9 @@ function MessageList(props) {
         ref={scrollViewRef}
         onContentSizeChange={handleContentSizeChange}
         onLayout={handleContentSizeChange}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#422ddd"]} />
+        }
       >
         {messages && messages.map((msg, index) => {
           return (<ItemMessage msg={msg} index={index} key={index} {...props} />)
@@ -180,7 +199,7 @@ function MessageList(props) {
 
     <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', borderTopColor: '#000', padding: 10 }}>
       {/* <VoiceIcon width={30} height={30} fill="#000" /> */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, padding: 10, borderRadius: 100, backgroundColor: 'rgba(0,0,0,0.1)', height: 40, marginLeft: 10, marginRight: 10 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, padding: 10, borderRadius: 100, backgroundColor: 'rgba(0,0,0,0.1)', height: 40, marginRight: 10 }}>
         <TextInput
           style={{ height: 40, borderColor: '#000', color: '#000', flex: 1 }}
           onChangeText={text => onChangeText(text)}

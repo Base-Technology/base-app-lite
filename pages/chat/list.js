@@ -3,7 +3,7 @@ import { SafeAreaView, View, FlatList, StyleSheet, Dimensions, TouchableWithoutF
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { IndexPath } from '@ui-kitten/components';
 import Explore from "../home/explore";
-
+import SplashScreen from "react-native-splash-screen";
 import AddIcon from "../../assets/icon_create.svg";
 import InviteIcon from '../../assets/icon_person_add.svg';
 
@@ -27,7 +27,7 @@ const DATA = [
     name: 'ChatGPT',
     type: 2,
     content: '...',
-    route:'ChatGpt',
+    route: 'ChatGpt',
     header: 'https://bf.jdd001.top/cryptologos/chatgpt.png'
   },
   {
@@ -38,12 +38,12 @@ const DATA = [
     header: 'https://bf.jdd001.top/cryptologos/zy.png'
   }
 ];
-const Item = ({ name, content, navigation, header, type,route, onShowInfo }) => {
+const Item = ({ name, content, navigation, header, type, route, onShowInfo }) => {
 
   return (
     <TouchableHighlight
       underlayColor="rgba(255, 255, 255, 1)"
-      onPress={() => navigation.navigate(route||'Doctor', { name, header, type })}
+      onPress={() => navigation.navigate(route || 'Doctor', { name, header, type })}
     >
       <View style={styles.item}>
         <View style={styles.itemc}>
@@ -91,6 +91,12 @@ const Chat = ({ navigation }) => {
   const [placementIndex, setPlacementIndex] = React.useState(new IndexPath(4));
   const placement = placements[placementIndex.row];
 
+  React.useEffect(() => {
+    setTimeout(() => {
+      SplashScreen.hide();
+
+    }, 200);
+  }, []);
   const MenuItemCustomFrist = ({ title, children }) => <View style={{ padding: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
     <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: 3, paddingHorizontal: 10, paddingVertical: 5, justifyContent: 'center', }}>
       <View style={{ alignItems: 'center', justifyContent: 'flex-end', flexDirection: 'row' }}>
