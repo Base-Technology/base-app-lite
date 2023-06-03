@@ -1,4 +1,4 @@
-import React, {  useRef } from 'react';
+import React, {  useRef,useEffect,useState } from 'react';
 import {
   StyleSheet,
   ScrollView,
@@ -26,7 +26,7 @@ import CopyIcon from '../../assets/icon_copy.svg';
 import ForwardIcon from '../../assets/icon_forward.svg';
 import DeleteIcon from '../../assets/icon_delete.svg';
 import SelectIcon from '../../assets/icon_select.svg';
-
+import { get,post } from '../../utils/request';
 import { queryMessage } from '../../database/message';
 import moment from 'moment';
 import IMTP from '../../imtp/service';
@@ -152,7 +152,16 @@ function MessageList(props) {
     });
   }
 
-
+  
+  // /api/v1/chat/chatgpt
+  const getChatGptMessage=()=>{
+    post('/api/v1/chat/chatgpt',{
+      "prompt":value
+  }).then(response => {
+      console.log('response', response);
+      setLimit(response.total_token_left_count);
+    })
+  }
   return <View style={{ flex: 1 }}>
     <View style={{ flex: 1 }}>
       <ScrollView
@@ -170,42 +179,32 @@ function MessageList(props) {
     </View>
 
     <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', borderTopColor: '#000', padding: 10 }}>
-      <VoiceIcon width={30} height={30} fill="#000" />
+      {/* <VoiceIcon width={30} height={30} fill="#000" /> */}
       <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, padding: 10, borderRadius: 100, backgroundColor: 'rgba(0,0,0,0.1)', height: 40, marginLeft: 10, marginRight: 10 }}>
         <TextInput
           style={{ height: 40, borderColor: '#000', color: '#000', flex: 1 }}
           onChangeText={text => onChangeText(text)}
           value={value}
+          placeholder='说点什么吧'
         />
-        <SmileIcon style={{}} width={30} height={30} fill="#000" />
+        {/* <SmileIcon style={{}} width={30} height={30} fill="#000" /> */}
 
       </View>
-      {
-        value != "" && <Button
+      <Button
           title="发送"
           color="#422DDD"
           onPress={() => {
-            IMTP.getInstance().sendMessage({
-              profile_id: '0x2',
-              content: value,
-            }, (msg) => {
-              messages.push(msg);
-              changeMessages(messages);
-              onChangeText('');
-            });
+            getChatGptMessage()
           }}
-        /> ||
-        <MoreIcon width={30} height={30} fill="rgba(0,0,0,1)" />
-      }
-
-      {/*  */}
+        />
 
     </View>
   </View>
     ;
 }
 const Moments = (props) => {
-
+  const [limit,setLimit]=useState(0);
+  
   const _drawer = useRef(null);
   closeDrawer = () => {
     _drawer.current && _drawer.current.close()
@@ -213,6 +212,19 @@ const Moments = (props) => {
   openDrawer = () => {
     _drawer.current && _drawer.current.open()
   };
+  useEffect(()=>{
+     getChatGptLimit();
+   
+  })
+  // /api/v1/chat/chatgpt_limit
+  const getChatGptLimit=()=>{
+    get('/api/v1/chat/chatgpt_limit').then(response => {
+      console.log('response', response);
+      setLimit(response.total_token_left_count);
+    })
+  }
+
+
   return (
     <>
     <View style={{ position: 'relative', backgroundColor: '#fff' }}>
@@ -241,7 +253,7 @@ const Moments = (props) => {
                   <Text style={{ color: '#000', fontSize: 16 }}>{props.route.params.name} {props.route.params.type != 2 && 'Official Group'}</Text>
                 </View>
                 <View style={{ flexDirection: 'row' }}>
-                  <Text style={{ color: '#000', fontSize: 8, }}>剩余 <Text style={{ fontSize: 8, }}>0 条</Text></Text>
+                  <Text style={{ color: '#000', fontSize: 8, }}>剩余 <Text style={{ fontSize: 8, }}>{limit} 条</Text></Text>
                 </View>
               </View>
             </View>

@@ -1,15 +1,20 @@
 import axios from 'axios';
 import { Alert } from "react-native";
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const api = axios.create({
   baseURL: 'https://movie.jdd001.top', // 设置基础URL
   timeout: 5000, // 设置请求超时时间
 });
 
+
 // 封装GET请求方法
 export const get = async (url, params) => {
   try {
+    const token = await AsyncStorage.getItem('token')
+    // 在请求中添加默认的Authorization头部参数
+    api.defaults.headers.common['Authorization'] = 'Bearer ' + token;
     const response = await api.get(url, { params });
+    console.log('responsedatadatadatadata', response.data);
     return response.data;
   } catch (error) {
     // 处理请求错误
@@ -21,6 +26,9 @@ export const get = async (url, params) => {
 // 封装POST请求方法
 export const post = async (url, data) => {
   try {
+    const token = await AsyncStorage.getItem('token')
+    // 在请求中添加默认的Authorization头部参数
+    api.defaults.headers.common['Authorization'] = 'Bearer ' + token;
     const response = await api.post(url, data);
     return response.data;
   } catch (error) {

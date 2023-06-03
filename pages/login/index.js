@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, TouchableWithoutFeedback, Alert } from "react-native";
 import { Input as TextInput } from '@ui-kitten/components';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Text from "../../components/BaseText";
 import ArrowRightIcon from "../../assets/icon_arrow_right.svg";
 
@@ -10,8 +11,8 @@ const Item = (props) => <View style={{ marginHorizontal: 20, marginVertical: 5 }
   {props.children}
 </View>
 const Login = ({ navigation }) => {
-  const [tel, setTel] = useState('13121758943');
-  const [password, onChangePassword] = useState('123456');
+  const [tel, setTel] = useState();
+  const [password, onChangePassword] = useState();
   // Login
   const handleLogin = async () => {
     const data = {
@@ -21,10 +22,11 @@ const Login = ({ navigation }) => {
     post('/api/v1/login', data).then(response => {
       console.log('response', response);
       if (response.code == "0") {
+        AsyncStorage.setItem('token', response.token)
         navigation.navigate('Chat');
       }
       else {
-        Alert.alert('提示', response.msg);
+        Alert.alert('提示', response.message);
       }
     })
   }

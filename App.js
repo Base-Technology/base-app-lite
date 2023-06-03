@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { Platform,Alert,Linking  } from 'react-native';
+import { Platform, Alert, Linking } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 import SettingsScreen from './pages/chat/detail';
 import ChatGptScreen from './pages/chat/chatgpt';
 import RegisterScreen from './pages/login/register';
@@ -15,7 +16,6 @@ import Chat from './pages/chat/list';
 import * as eva from '@eva-design/eva';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
-import SplashScreen from "react-native-splash-screen";
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import {
   isFirstTime,
@@ -28,6 +28,7 @@ import {
   downloadAndInstallApk,
 } from 'react-native-update';
 import _updateConfig from './update.json';
+import { get } from './utils/request';
 const { appKey } = _updateConfig[Platform.OS];
 const client = new ApolloClient({
   uri: 'http://147.182.251.92:10000/subgraphs/name/base/base-graph',
@@ -38,6 +39,9 @@ const Stack = createNativeStackNavigator();
 export default function App(logined, hasWallet) {
 
   return () => {
+    const [logined,setLogined]=React.useState(false);
+    // getUserInfo
+    
     React.useEffect(() => {
       if (isFirstTime) {
         // 必须调用此更新成功标记方法
@@ -47,7 +51,7 @@ export default function App(logined, hasWallet) {
       } else if (isRolledBack) {
         console.log('刚刚更新失败了,版本被回滚.');
       }
-      SplashScreen.hide();
+      // SplashScreen.hide();
       checkUpdates();
     }, []);
     doUpdate = async (info) => {
@@ -96,7 +100,7 @@ export default function App(logined, hasWallet) {
           {
             text: '确定',
             onPress: () => {
-              info.downloadUrl='https://bf.jdd001.top/app-release.apk';
+              info.downloadUrl = 'https://bf.jdd001.top/app-release.apk';
               if (info.downloadUrl) {
                 // apk可直接下载安装
                 if (Platform.OS === 'android' && info.downloadUrl.endsWith('.apk')) {
@@ -141,14 +145,15 @@ export default function App(logined, hasWallet) {
               {!logined && (<Stack.Screen options={{ headerShown: false, animation: 'none' }} name="LoginOther" component={LoginOtherScreen} />)}
               {!hasWallet && (<Stack.Screen options={{ headerShown: false, animation: 'none' }} name="WalletCreate" component={WalletCreate} />)} */}
               {/* <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Home" component={HomeScreen} /> */}
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Login" component={LoginScreen} />
-             
-              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="UserInfo" component={UserInfoScreen} />
-              
+
               <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Register" component={RegisterScreen} />
 
+              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Login" component={LoginScreen} />
+
+              <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="UserInfo" component={UserInfoScreen} />
 
               <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Chat" component={Chat} />
+
               <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Doctor" component={SettingsScreen} />
               <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="ChatGpt" component={ChatGptScreen} />
               <Stack.Screen options={{ headerShown: false, animation: 'none' }} name="Personal" component={Personal} />
