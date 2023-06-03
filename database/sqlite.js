@@ -2,7 +2,6 @@ import SQLiteStorage from 'react-native-sqlite-storage';
 import sql from 'react-native-sqlite-storage';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
-import { profiles } from '../constants/imtp';
 
 const database_name = "base.db";
 const database_version = "1.0";
@@ -42,35 +41,30 @@ export default class SQLite {
     }
 
     async initDatabase() {
-        await this.executeSql(`CREATE TABLE IF NOT EXISTS "profile" (
-            "id" text NOT NULL,
-            "private_key" TEXT,
-            "address" TEXT,
+        await this.executeSql(`CREATE TABLE IF NOT EXISTS "users" (
+            "id" integer NOT NULL,
+            "name" TEXT,
+            "username" TEXT,
+            "area" TEXT,
+            "school" TEXT,
+            "introduction" TEXT,
+            "avatar" TEXT,
+            "imtp_user_id" TEXT,
             PRIMARY KEY ("id")
           )`);
-        await this.executeSql(`CREATE TABLE IF NOT EXISTS "identity" (
-            "mail" text NOT NULL,
-            "password" text NOT NULL,
-            PRIMARY KEY ("mail")
-          )`);
-
-        // TODO: insert test data
-        // await this.insertTestData();
     }
 
-    async insertTestData() {
-        profiles.forEach((profile) => {
-            this.executeSql(`CREATE TABLE IF NOT EXISTS "message_${profile.id}" (
-                "id" text NOT NULL,
-                "state" integer,
-                "timestamp" DATE,
-                "profile_id" text,
-                "is_send" integer,
-                "content" text,
-                PRIMARY KEY ("id")
-              )`);
-            this.executeSql(`INSERT OR IGNORE INTO "profile" VALUES (?, ?, ?)`, [profile.id, profile.private_key, profile.address]);
-        })
+    async createMessageTable(userID) {
+        await this.executeSql(`CREATE TABLE IF NOT EXISTS "message_${userID}" (
+            "id" text NOT NULL,
+            "state" integer,
+            "timestamp" DATE,
+            "group_id" text,
+            "imtp_user_id" text,
+            "is_send" integer,
+            "content" text,
+            PRIMARY KEY ("id")
+          )`);
     }
 
     async executeSql(sql, params) {

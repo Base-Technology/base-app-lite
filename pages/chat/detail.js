@@ -11,7 +11,7 @@ import {
   RefreshControl
 } from 'react-native';
 import { BaseText as Text } from "../../components/Base";
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollTabView, ScrollView as NewScrollView, FlatList } from '../../components/BaseHead';
 import BackIcon from "../../assets/icon_arrow_back.svg";
 import { Popover, MenuItem, Tooltip } from '@ui-kitten/components';
@@ -157,11 +157,11 @@ function MessageList(props) {
   const handleContentSizeChange = (contentWidth, contentHeight) => {
     // const scrollViewHeight = scrollViewRef.current?.layoutMeasurement.height;
     // if (scrollViewHeight && contentHeight > scrollViewHeight) {
-      scrollToBottom();
+    scrollToBottom();
     // }
   };
   if (!messages) {
-    queryMessage((msgs) => {
+    queryMessage(undefined, undefined, (msgs) => {
       changeMessages(msgs);
     });
   }
@@ -176,13 +176,26 @@ function MessageList(props) {
   const [refreshing, setRefreshing] = React.useState(false);
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    
-    wait(2000).then(() => {
+
+    let firstTimestamp = undefined;
+    console.log(messages);
+    if (messages.length > 0) {
+      firstTimestamp = messages[0].timestamp;
+    }
+    queryMessage(undefined, firstTimestamp, (msgs) => {
+      for (let i = msgs.length - 1; i >= 0; i--) {
+        messages.unshift(msgs[i]);
+      }
+      changeMessages(messages);
       setRefreshing(false);
-      
     });
 
-  }, []);
+    // wait(2000).then(() => {
+    //   setRefreshing(false);
+
+    // });
+
+  }, [messages]);
   return <View style={{ flex: 1 }}>
     <View style={{ flex: 1 }}>
       <ScrollView
@@ -217,9 +230,11 @@ function MessageList(props) {
         value != "" && <Button
           title="Send"
           color="#422DDD"
-          onPress={() => {
+          onPress={async () => {
+            const groupID = await AsyncStorage.getItem('group_id');
             IMTP.getInstance().sendMessage({
-              profile_id: '0x2',
+              recvID: "",
+              groupID: groupID,
               content: value,
             }, (msg) => {
               messages.push(msg);
