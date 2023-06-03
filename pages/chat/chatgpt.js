@@ -150,7 +150,7 @@ function MessageList(props) {
     // }
   };
   if (!messages) {
-    queryMessage("chatgpt", (msgs) => {
+    queryMessage("chatgpt", undefined, (msgs) => {
       changeMessages(msgs);
     });
   }
@@ -173,13 +173,26 @@ function MessageList(props) {
   const [refreshing, setRefreshing] = React.useState(false);
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    
-    wait(2000).then(() => {
+
+    let firstTimestamp = undefined;
+    console.log(messages);
+    if (messages.length > 0) {
+      firstTimestamp = messages[0].timestamp;
+    }
+    queryMessage("chatgpt", firstTimestamp, (msgs) => {
+      for (let i = msgs.length - 1; i >= 0; i--) {
+        messages.unshift(msgs[i]);
+      }
+      changeMessages(messages);
       setRefreshing(false);
-      
     });
 
-  }, []);
+    // wait(2000).then(() => {
+    //   setRefreshing(false);
+
+    // });
+
+  }, [messages]);
   return <View style={{ flex: 1 }}>
     <View style={{ flex: 1 }}>
       <ScrollView

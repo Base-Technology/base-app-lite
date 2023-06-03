@@ -1,15 +1,18 @@
 import SQLite from './sqlite';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export async function queryMessage(group_id, callback) {
+export async function queryMessage(group_id, timestamp, callback) {
     if (!group_id) {
         group_id = await AsyncStorage.getItem('group_id');
     }
+    if (!timestamp) {
+        timestamp = 4503599627370495;
+    }
     const userID = await AsyncStorage.getItem('user_id');
     const sqlite = SQLite.getInstance();
-    const results = await sqlite.executeSql(`SELECT * FROM "message_${userID}" WHERE "group_id" = ? ORDER BY "timestamp"`, [group_id]);
+    const results = await sqlite.executeSql(`SELECT * FROM "message_${userID}" WHERE "group_id" = ? AND "timestamp" < ? ORDER BY "timestamp" DESC LIMIT 10`, [group_id, timestamp]);
     const messages = [];
-    for (let i = 0; i < results.rows.length; i++) {
+    for (let i = results.rows.length - 1; i >= 0; i--) {
         const message = results.rows.item(i);
         messages.push(message);
     }

@@ -144,6 +144,9 @@ export default class IMTP {
 
     async handleMessage(msg) {
         try {
+            if (msg.contentType > 105) {
+                return;
+            }
             const message = {
                 id: msg.clientMsgID,
                 state: 0,
