@@ -53,7 +53,7 @@ function MessageItem(props) {
         <View>
           <View style={{
             padding: 10,
-            backgroundColor: msg.is_send == 0 ? 'rgba(255,255,255,0.1)' : '#422DDD',
+            backgroundColor: msg.is_send == 0 ? 'rgba(0,0,0,0.1)' : '#422DDD',
             marginLeft: props.route.params.type != 2 ? 20 : 0,
             borderRadius: msg.content.length > 70 ? 10 : 100,
             borderBottomLeftRadius: msg.is_send == 0 ? 0 : undefined,
@@ -84,7 +84,7 @@ function MessageItem(props) {
     </TouchableWithoutFeedback>
   )
   return <View>
-    <Popover
+    {/* <Popover
       anchor={rtb}
       visible={visible}
       placement="top"
@@ -124,15 +124,74 @@ function MessageItem(props) {
       </View>
 
 
-    </Popover>
-
+    </Popover> */}
+{rtb()}
   </View>
 }
 const ItemMessage = React.memo(MessageItem);
 function MessageList(props) {
   const [value, onChangeText] = React.useState('');
 
-  const [messages, changeMessages] = React.useState(undefined);
+  const [messages, changeMessages] = React.useState([{
+    content:"你怎么看安史之乱",is_send:1
+  },{
+    content:"react 写-计时器组件in\nclass Timer extends React,Component (n constructor(props) f\nsuper(props); nthis.state = fntime: e'nt;n  n'n componentDidMount() fynthis,interwal =1， 1098);setInterval(() => {\nthis.setstate(state => (f\n1)) nn }in'n componentwillunmount() finclearInterval(this,interval);'n n'n render() f\nreturn <diw>(this.state.timers</div>; n }'n1",is_send:0
+  },
+  {
+    content:"你怎么看安史之乱",is_send:1
+  },{
+    content:"你怎么看安史之乱",is_send:0
+  },
+  {
+    content:"你怎么看安史之乱",is_send:1
+  },{
+    content:"你怎么看安史之乱",is_send:0
+  },
+  {
+    content:"你怎么看安史之乱",is_send:1
+  },{
+    content:"你怎么看安史之乱",is_send:0
+  },
+  {
+    content:"你怎么看安史之乱",is_send:1
+  },{
+    content:"你怎么看安史之乱",is_send:0
+  },
+  {
+    content:"你怎么看安史之乱",is_send:1
+  },{
+    content:"你怎么看安史之乱",is_send:0
+  },
+  {
+    content:"你怎么看安史之乱",is_send:1
+  },{
+    content:"你怎么看安史之乱",is_send:0
+  },
+  {
+    content:"你怎么看安史之乱",is_send:1
+  },{
+    content:"你怎么看安史之乱",is_send:0
+  },
+  {
+    content:"你怎么看安史之乱",is_send:1
+  },{
+    content:"你怎么看安史之乱",is_send:0
+  },
+  {
+    content:"你怎么看安史之乱",is_send:1
+  },{
+    content:"你怎么看安史之乱",is_send:0
+  },
+  {
+    content:"你怎么看安史之乱",is_send:1
+  },{
+    content:"你怎么看安史之乱",is_send:0
+  },
+  {
+    content:"你怎么看安史之乱",is_send:1
+  },{
+    content:"你怎么看安史之乱",is_send:0
+  }]);
   const scrollViewRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -160,7 +219,10 @@ function MessageList(props) {
       "prompt":value
   }).then(response => {
       console.log('response', response);
-      setLimit(response.total_token_left_count);
+      messages.push(msg);
+      changeMessages(messages);
+      onChangeText('');
+      // setLimit(response.total_token_left_count);
     })
   }
   const wait = (timeout) => {
