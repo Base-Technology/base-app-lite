@@ -29,7 +29,7 @@ const Login = ({ navigation }) => {
   const [verificationCode, onChangeverificationCode] = useState('');
   const [password, setPassword] = useState('');
   const [imgHeader, setImgHeader] = useState('');
-  const [mail, onChangeMail] = useState('');
+  const [nickName, setNickName] = useState('');
   const [selectedIndex, setSelectedIndex] = useState();
   const [date, setDate] = useState();
 
@@ -47,13 +47,16 @@ const Login = ({ navigation }) => {
   // Register
   const handleRegister = () => {
     const data = {
-      "username": mail,
+      "username": nickName,
       "password": password,
       "phone": tel,
-      "area": "1",
+      "area": "default",
       "school": school,
-      "validate_code": verificationCode
+      "validate_code": verificationCode,
+      "avatar":imgHeader
     }
+    console.log('注册数据',data);
+    // return ;
     post('/api/v1/register', data).then(response => {
       console.log('response', response);
       if (response.code == "0") {
@@ -136,7 +139,7 @@ const Login = ({ navigation }) => {
           </TouchableWithoutFeedback>
         </Item>
         <Item>
-          <TextInput style={{ flex: 1 }} placeholder="请输入昵称" value={mail} onChangeText={mail => onChangeMail(mail)} />
+          <TextInput style={{ flex: 1 }} placeholder="请输入昵称" value={nickName} onChangeText={nickName => setNickName(nickName)} />
         </Item>
         <Item>
           <Select
