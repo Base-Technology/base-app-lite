@@ -43,7 +43,6 @@ export default class SQLite {
     async initDatabase() {
         await this.executeSql(`CREATE TABLE IF NOT EXISTS "users" (
             "id" integer NOT NULL,
-            "name" TEXT,
             "username" TEXT,
             "area" TEXT,
             "school" TEXT,

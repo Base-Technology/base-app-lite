@@ -50,36 +50,36 @@ const dh = Dimensions.get('window').height;
 function MessageItem(props) {
   const { msg, index } = props;
   const [visible, setVisible] = React.useState(false);
+  console.log(msg.avatar);
   const RenderToggleButton = () => (
     <View key={index} style={{ display: 'flex', flexDirection: 'row', justifyContent: msg.is_send == 0 ? 'flex-start' : 'flex-end', marginBottom: 10 }}>
-      {props.route.params.type != 2 && msg.is_send == 0 && (
+      {msg.is_send == 0 && (
         <View>
           <Image
             style={{ width: 40, height: 40, borderRadius: 100, }}
-            source={Math.random() > 0.5 && require('../../assets/yk.jpg') || require('../../assets/mark.jpg')}
+            source={{ uri: msg.avatar }}
           />
         </View>) ||
-        (props.route.params.type != 2 && <View style={{ width: 40, height: 40 }}>
-        </View>)
+        (<View style={{ width: 40, height: 40 }}></View>)
       }
       <View style={{ flex: 1, flexDirection: 'row', justifyContent: msg.is_send == 0 && 'flex-start' || 'flex-end' }}>
         <View>
           <View style={{
             padding: 10,
-            backgroundColor: msg.is_send == 0 ? 'rgba(255,255,255,0.1)' : '#422DDD',
-            marginLeft: props.route.params.type != 2 ? 20 : 0,
+            backgroundColor: msg.is_send == 0 ? 'rgba(0,0,0,0.1)' : '#422DDD',
+            marginLeft: 20,
             borderRadius: msg.content.length > 70 ? 10 : 100,
             borderBottomLeftRadius: msg.is_send == 0 ? 0 : undefined,
             borderBottomRightRadius: msg.is_send == 0 ? undefined : 0,
           }}>
-            <Text style={{ color: '#000', fontSize: 14 }}>{msg.content}</Text>
+            <Text style={{ color: msg.is_send == 0 && '#000' || '#fff', fontSize: 14 }}>{msg.content}</Text>
           </View>
-          {msg.is_send == 0 && (<Text style={{ paddingHorizontal: 10, color: 'rgba(255,255,255,0.3)', fontSize: 12, textAlign: 'center', marginLeft: 20, }}>{moment.unix(msg.timestamp / 1000).format('HH:mm')}</Text>)}
+          {msg.is_send == 0 && (<Text style={{ paddingHorizontal: 10, color: 'rgba(0,0,0,0.3)', fontSize: 12, textAlign: 'center', marginLeft: 20, }}>{moment.unix(msg.timestamp / 1000).format('HH:mm')}</Text>)}
           {msg.is_send == 1 && (
             <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
               <View style={{ display: 'flex', flexDirection: 'row' }}>
-                <Text style={{ paddingLeft: 10, color: 'rgba(255,255,255,0.3)', fontSize: 12 }}>{moment.unix(msg.timestamp / 1000).format('HH:mm')}</Text>
-                <DoneIcon width={20} height={20} fill="rgba(255,255,255,0.3)" />
+                <Text style={{ paddingLeft: 10, color: 'rgba(0,0,0,0.3)', fontSize: 12 }}>{moment.unix(msg.timestamp / 1000).format('HH:mm')}</Text>
+                <DoneIcon width={20} height={20} fill="rgba(0,0,0,0.3)" />
               </View>
             </View>)}
         </View>
