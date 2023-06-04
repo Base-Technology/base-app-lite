@@ -8,7 +8,9 @@ import {
   Image,
   Dimensions,
   Button,
-  RefreshControl
+  RefreshControl,
+  Clipboard,
+  ToastAndroid
 } from 'react-native';
 import { BaseText as Text } from "../../components/Base";
 
@@ -61,7 +63,7 @@ function MessageItem(props) {
             borderBottomLeftRadius: msg.is_send == 0 ? 0 : undefined,
             borderBottomRightRadius: msg.is_send == 0 ? undefined : 0,
           }}>
-            <Text style={{ color: '#000', fontSize: 14 }}>{msg.content}</Text>
+            <Text style={{ color: msg.is_send == 0 && '#000' || '#fff', fontSize: 14 }}>{msg.content}</Text>
           </View>
           {msg.is_send == 0 && (<Text style={{ paddingHorizontal: 10, color: 'rgba(255,255,255,0.3)', fontSize: 12, textAlign: 'center', marginLeft: 20, }}>{moment.unix(msg.timestamp / 1000).format('HH:mm')}</Text>)}
           {msg.is_send == 1 && (
@@ -76,123 +78,77 @@ function MessageItem(props) {
       </View>
     </View>
   );
-  const rtb = () => (
-    <TouchableWithoutFeedback
-      onPress={() => setVisible(true)}>
-      <View>
-        <RenderToggleButton />
+  return <TouchableWithoutFeedback
+    onPress={() => { Clipboard.setString(msg.content); ToastAndroid.show("已复制!", ToastAndroid.SHORT) }}>
+    <View>
+      <RenderToggleButton />
 
-      </View>
-    </TouchableWithoutFeedback>
-  )
-  return <View>
-    {/* <Popover
-      anchor={rtb}
-      visible={visible}
-      placement="top"
-      onBackdropPress={() => setVisible(false)}
-      style={{ backgroundColor: '#1e1e1e', width: 250, borderWidth: 0 }}
-    >
-      <View>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 5, padding: 5 }}>
-          <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
-            <ReplyIcon width={25} height={25} fill="#000" />
-            <Text>Reply</Text>
-          </View>
-          <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
-            <EditIcon width={25} height={25} fill="#000" />
-            <Text>Edit</Text>
-          </View>
-          <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
-            <CopyIcon width={25} height={25} fill="#000" />
-            <Text>Copy</Text>
-          </View>
-          <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-            <ForwardIcon width={25} height={25} fill="#000" />
-            <Text>Forward</Text>
-          </View>
-          <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
-            <DeleteIcon width={25} height={25} fill="#000" />
-            <Text>Delete</Text>
-          </View>
-          <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
-            <SelectIcon width={25} height={25} fill="#000" />
-            <Text>Select</Text>
-          </View>
-        </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-          <View style={{ marginLeft: 10, width: 0, height: 0, borderColor: 'rgba(0,0,0,0)', borderWidth: 10, borderLeftColor: 'rgba(0,0,0,0)', borderRightColor: 'rgba(0,0,0,0)', borderBottomColor: 'rgba(0,0,0,0)', borderTopColor: 'rgba(255,255,255,0.1)' }}></View>
-        </View>
-      </View>
-
-
-    </Popover> */}
-{rtb()}
-  </View>
+    </View>
+  </TouchableWithoutFeedback>
 }
 const ItemMessage = React.memo(MessageItem);
 function MessageList(props) {
   const [value, onChangeText] = React.useState('');
 
   const [messages, changeMessages] = React.useState([{
-    content:"你怎么看安史之乱",is_send:1
-  },{
-    content:"react 写-计时器组件in\nclass Timer extends React,Component (n constructor(props) f\nsuper(props); nthis.state = fntime: e'nt;n  n'n componentDidMount() fynthis,interwal =1， 1098);setInterval(() => {\nthis.setstate(state => (f\n1)) nn }in'n componentwillunmount() finclearInterval(this,interval);'n n'n render() f\nreturn <diw>(this.state.timers</div>; n }'n1",is_send:0
+    content: "你怎么看安史之乱", is_send: 1
+  }, {
+    content: "react 写-计时器组件n\nclass Timer extends React,Component (n constructor(props) f\nsuper(props); nthis.state = fntime: e'nt;n  n'n componentDidMount() fynthis,interwal =1， 1098);setInterval(() => {\nthis.setstate(state => (f\n1)) nn }in'n componentwillunmount() finclearInterval(this,interval);'n n'n render() f\nreturn <diw>(this.state.timers</div>; n }'n1", is_send: 0
   },
   {
-    content:"你怎么看安史之乱",is_send:1
-  },{
-    content:"你怎么看安史之乱",is_send:0
+    content: "你怎么看安史之乱", is_send: 1
+  }, {
+    content: "你怎么看安史之乱", is_send: 0
   },
   {
-    content:"你怎么看安史之乱",is_send:1
-  },{
-    content:"你怎么看安史之乱",is_send:0
+    content: "你怎么看安史之乱", is_send: 1
+  }, {
+    content: "你怎么看安史之乱", is_send: 0
   },
   {
-    content:"你怎么看安史之乱",is_send:1
-  },{
-    content:"你怎么看安史之乱",is_send:0
+    content: "你怎么看安史之乱", is_send: 1
+  }, {
+    content: "你怎么看安史之乱", is_send: 0
   },
   {
-    content:"你怎么看安史之乱",is_send:1
-  },{
-    content:"你怎么看安史之乱",is_send:0
+    content: "你怎么看安史之乱", is_send: 1
+  }, {
+    content: "你怎么看安史之乱", is_send: 0
   },
   {
-    content:"你怎么看安史之乱",is_send:1
-  },{
-    content:"你怎么看安史之乱",is_send:0
+    content: "你怎么看安史之乱", is_send: 1
+  }, {
+    content: "你怎么看安史之乱", is_send: 0
   },
   {
-    content:"你怎么看安史之乱",is_send:1
-  },{
-    content:"你怎么看安史之乱",is_send:0
+    content: "你怎么看安史之乱", is_send: 1
+  }, {
+    content: "你怎么看安史之乱", is_send: 0
   },
   {
-    content:"你怎么看安史之乱",is_send:1
-  },{
-    content:"你怎么看安史之乱",is_send:0
+    content: "你怎么看安史之乱", is_send: 1
+  }, {
+    content: "你怎么看安史之乱", is_send: 0
   },
   {
-    content:"你怎么看安史之乱",is_send:1
-  },{
-    content:"你怎么看安史之乱",is_send:0
+    content: "你怎么看安史之乱", is_send: 1
+  }, {
+    content: "你怎么看安史之乱", is_send: 0
   },
   {
-    content:"你怎么看安史之乱",is_send:1
-  },{
-    content:"你怎么看安史之乱",is_send:0
+    content: "你怎么看安史之乱", is_send: 1
+  }, {
+    content: "你怎么看安史之乱", is_send: 0
   },
   {
-    content:"你怎么看安史之乱",is_send:1
-  },{
-    content:"你怎么看安史之乱",is_send:0
+    content: "你怎么看安史之乱", is_send: 1
+  }, {
+    content: "你怎么看安史之乱", is_send: 0
   },
   {
-    content:"你怎么看安史之乱",is_send:1
-  },{
-    content:"你怎么看安史之乱",is_send:0
+    content: "你怎么看安史之乱", is_send: 1
+  }, {
+    content: "你怎么看安史之乱", is_send: 0
   }]);
   const scrollViewRef = useRef(null);
 
@@ -325,7 +281,6 @@ const Moments = (props) => {
   };
   useEffect(() => {
     getChatGptLimit();
-
   })
   // /api/v1/chat/chatgpt_limit
   const getChatGptLimit = () => {
@@ -334,8 +289,6 @@ const Moments = (props) => {
       setLimit(response.total_token_left_count);
     })
   }
-
-
   return (
     <>
       <View style={{ position: 'relative', backgroundColor: '#fff' }}>
@@ -344,7 +297,6 @@ const Moments = (props) => {
           style={{
             flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
           }}
-
         >
           <View style={{ height: 60, padding: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' }}>
             <View>
@@ -369,7 +321,6 @@ const Moments = (props) => {
               </View>
             </View>
           </View>
-
         </View>
       </View>
       <View style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -385,5 +336,4 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-
 export default Moments;
