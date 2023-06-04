@@ -1,5 +1,6 @@
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ethers } from 'ethers';
 import axios from 'axios';
 import OpenIMSDKRN, { OpenIMEmitter } from 'open-im-sdk-rn';
@@ -21,13 +22,14 @@ export default class IMTP {
     async init() {
         if (!this.initCompleted) {
             this.initCompleted = true;
-            this.profile = await queryProfileByID();
-            const wallet = new ethers.Wallet(this.profile.private_key);
+            const privateKey = await AsyncStorage.getItem('private_key');
+            const wallet = new ethers.Wallet(privateKey);
+            this.address = wallet.address;
             const signature = await wallet.signMessage("hello");
             this.config = {
-                apiServer: "http://64.227.99.190:10002",
-                wsServer: "ws://64.227.99.190:10001",
-                appServer: "http://64.227.99.190:8001",
+                apiServer: "http://119.45.212.83:10002",
+                wsServer: "ws://119.45.212.83:10001",
+                appServer: "http://119.45.212.83:8001",
                 loginParams: {
                     signature: signature,
                     senderAddress: wallet.address,
@@ -53,6 +55,7 @@ export default class IMTP {
             } catch (e) {
                 this.initCompleted = false;
                 console.log(e);
+                throw e;
             }
         }
     }
@@ -75,25 +78,19 @@ export default class IMTP {
                 await OpenIMSDKRN.login(userID, token, this.uuid());
                 status = await OpenIMSDKRN.getLoginStatus();
                 console.log(`login status: ${status}`);
+                if (status != 101) {
+                    throw new Error("login failed");
+                }
             }
         } catch (e) {
             console.log(e);
-        }
-    }
-
-    async getProfile() {
-        try {
-            await this.login();
-            return this.profile;
-        } catch (e) {
-            console.log(e);
+            throw e;
         }
     }
 
     async sendMessage(message, callback) {
         try {
             await this.login();
-            const recvProfile = await queryProfileByID(message.profile_id);
             const textMessage = await OpenIMSDKRN.createTextMessage(message.content, this.uuid());
             const offlinePushInfo = {
                 title: 'you have a new message',
@@ -104,8 +101,8 @@ export default class IMTP {
             }
             const sendMessage = await OpenIMSDKRN.sendMessage(
                 textMessage,
-                `01_1_${recvProfile.address.toLowerCase()}`,
-                '',
+                message.recvID,
+                message.groupID,
                 offlinePushInfo,
                 this.uuid(),
             );
@@ -114,7 +111,6 @@ export default class IMTP {
                 id: msg.clientMsgID,
                 state: 0,
                 timestamp: msg.createTime,
-                profile_id: '0x123',
                 is_send: 1,
                 content: msg.content,
             };
@@ -132,7 +128,7 @@ export default class IMTP {
                 groupID: '',
                 startClientMsgID: lastMessage.id,
                 count: 10,
-                userID: `01_1_${this.profile.address.toLowerCase()}`,
+                userID: `01_1_${this.address.toLowerCase()}`,
                 conversationID: "",
             }
             const data = await OpenIMSDKRN.getHistoryMessageListReverse(options, this.uuid());
@@ -148,12 +144,16 @@ export default class IMTP {
 
     async handleMessage(msg) {
         try {
+            if (msg.contentType > 105) {
+                return;
+            }
             const message = {
                 id: msg.clientMsgID,
                 state: 0,
                 timestamp: msg.createTime,
-                profile_id: '0x123',
-                is_send: 0,
+                group_id: msg.groupID,
+                imtp_user_id: msg.sendID == `01_1_${this.address.toLowerCase()}` ? "" : msg.sendID,
+                is_send: msg.sendID == `01_1_${this.address.toLowerCase()}` ? 1 : 0,
                 content: msg.content,
             };
             await addMessage(message);
@@ -163,7 +163,7 @@ export default class IMTP {
     }
 
     async onRecvNewMessage(v) {
-        console.log('rec new msg:::');
+        console.log(`rec new msg:::${v.data}`);
         try {
             const msg = JSON.parse(v.data);
             await this.handleMessage(msg);

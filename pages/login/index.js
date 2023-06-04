@@ -4,6 +4,8 @@ import { Input as TextInput } from '@ui-kitten/components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Text from "../../components/BaseText";
 import ArrowRightIcon from "../../assets/icon_arrow_right.svg";
+import { createMessageTable } from "../../database/message";
+import IMTP from '../../imtp/service';
 
 import { post } from '../../utils/request';
 
@@ -22,8 +24,16 @@ const Login = ({ navigation }) => {
     post('/api/v1/login', data).then(response => {
       console.log('response', response);
       if (response.code == "0") {
-        AsyncStorage.setItem('token', response.token)
-        navigation.navigate('Chat');
+        const init = async () => {
+          await AsyncStorage.setItem('token', response.token);
+          await AsyncStorage.setItem('user_id', response.user_id.toString());
+          await AsyncStorage.setItem('private_key', response.private_key);
+          await AsyncStorage.setItem('group_id', response.group_id);
+          await createMessageTable(response.user_id);
+          await IMTP.getInstance().init();
+          navigation.navigate('Chat');
+        }
+        init();
       }
       else {
         Alert.alert('提示', response.message);
