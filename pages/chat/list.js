@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SafeAreaView, View, FlatList, StyleSheet, Dimensions, TouchableWithoutFeedback, TouchableHighlight, Image } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { IndexPath } from '@ui-kitten/components';
@@ -6,7 +6,7 @@ import Explore from "../home/explore";
 import SplashScreen from "react-native-splash-screen";
 import AddIcon from "../../assets/icon_create.svg";
 import InviteIcon from '../../assets/icon_person_add.svg';
-
+import { get, post } from '../../utils/request';
 import Text from "../../components/BaseText";
 import BasePopup from "../../components/BasePopup";
 import { useQuery, gql } from '@apollo/client';
@@ -48,10 +48,11 @@ const Item = ({ name, content, navigation, header, type, route, onShowInfo }) =>
       <View style={styles.item}>
         <View style={styles.itemc}>
           <View style={{ width: 50, height: 50, borderRadius: 40, backgroundColor: 'gray', marginRight: 10 }}>
-            <Image
+            {header&& <Image
               style={{ width: 50, height: 50, borderRadius: 100, }}
               source={{ uri: header }}
-            />
+            /> ||
+            <View style={{width: 50, height: 50, borderRadius: 100,backgroundColor:'#422DDD'}}></View>}
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.title}>{name}</Text>
@@ -85,6 +86,7 @@ const Chat = ({ navigation }) => {
   const renderItem = ({ item }) => (
     <Item onShowInfo={(head) => { setVisibleInfo(true); setCurrentInfo(head) }} key={item.id + 1} navigation={navigation} {...item} />
   );
+  const [listGroup,setListGroup]=useState(DATA);
   const [visible, setVisible] = React.useState(false);
   const [visibleInfo, setVisibleInfo] = React.useState(false);
   const [currentInfo, setCurrentInfo] = React.useState()
@@ -96,6 +98,7 @@ const Chat = ({ navigation }) => {
       SplashScreen.hide();
 
     }, 200);
+    getList();
   }, []);
   const MenuItemCustomFrist = ({ title, children }) => <View style={{ padding: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
     <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: 3, paddingHorizontal: 10, paddingVertical: 5, justifyContent: 'center', }}>
@@ -105,7 +108,25 @@ const Chat = ({ navigation }) => {
       <Text style={{ fontSize: 14 }}>{title}</Text>
     </View>
 
+ 
   </View>
+  const getList=()=>{
+    // /api/v1/group/user
+    get('/api/v1/group/user').then(response => {
+      // console.log('/api/v1/group/user', response);
+      if(response.code==0&&response.data.length>0){
+        setListGroup(data=>{
+          console.log(data);
+          return [...data,{
+            id:response.data[0].id,
+            name:response.data[0].school,
+            type: 2,
+            content: '...',
+          }];
+        });
+      }
+    })
+  }
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ paddingHorizontal: 15, paddingVertical: 10, }}>
@@ -115,7 +136,7 @@ const Chat = ({ navigation }) => {
       </View>
 
       <FlatList
-        data={DATA}
+        data={listGroup}
         renderItem={renderItem}
         keyExtractor={item => item.id}
       />

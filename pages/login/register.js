@@ -6,7 +6,7 @@ import {
 } from '@ui-kitten/components';
 import ImagePicker from 'react-native-image-crop-picker';
 import SplashScreen from "react-native-splash-screen";
-
+import { CommonActions } from '@react-navigation/native';
 import AddIcon from "../../assets/icon_add_big.svg";
 
 import Text from "../../components/BaseText";
@@ -103,9 +103,16 @@ const Login = ({ navigation }) => {
   const getUserInfo = async () => {
     // /api/v1/info
     const response =await get('/api/v1/info');
-    console.log('首页',response);
+    // console.log('首页',response);
     if(response.code == "0"){
-      navigation.navigate('Chat');
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [
+            { name: 'Chat' } // 替换为你要跳转的目标页面的名称
+          ],
+        })
+      );
     }
     else{
       SplashScreen.hide();

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, TouchableWithoutFeedback, Alert } from "react-native";
+import { CommonActions } from '@react-navigation/native';
 import { Input as TextInput } from '@ui-kitten/components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Text from "../../components/BaseText";
@@ -31,7 +32,15 @@ const Login = ({ navigation }) => {
           await AsyncStorage.setItem('group_id', response.group_id);
           await createMessageTable(response.user_id);
           await IMTP.getInstance().init();
-          navigation.navigate('Chat');
+          // navigation.navigate('Chat');
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [
+                { name: 'Chat' } // 替换为你要跳转的目标页面的名称
+              ],
+            })
+          );
         }
         init();
       }

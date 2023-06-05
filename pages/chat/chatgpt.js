@@ -91,9 +91,9 @@ function MessageList(props) {
   const [value, onChangeText] = React.useState('');
 
   const [messages, changeMessages] = React.useState([{
-    content: "你怎么看安史之乱", is_send: 1
+    content: "红烧肉怎么做", is_send: 1
   }, {
-    content: "react 写-计时器组件n\nclass Timer extends React,Component (n constructor(props) f\nsuper(props); nthis.state = fntime: e'nt;n  n'n componentDidMount() fynthis,interwal =1， 1098);setInterval(() => {\nthis.setstate(state => (f\n1)) nn }in'n componentwillunmount() finclearInterval(this,interval);'n n'n render() f\nreturn <diw>(this.state.timers</div>; n }'n1", is_send: 0
+    content: "红烧肉怎么做\n\n一、材料准备：\n\n1、猪里脊肉500克；\n\n2、青椒、胡萝卜各一个；\n\n3、生姜、葱各适量；\n\n4、料酒、盐、酱油、淀粉、白糖、老抽各适量；\n\n二、烹饪步骤：\n\n1.将猪里脊肉切成大块，放入盆中，加入料酒、生姜、葱末、半匙盐、酱油、淀粉、白糖、老抽腌制10分钟。\n\n2.取一个炒锅，加入适量的油，烧至六成热，放入腌制好的猪肉，煎至两面金黄。\n\n3.把煎好的猪肉捞出，放入清水中洗净，放入锅中，加入料酒、酱油、白糖、老抽、淀粉、半杯水，烧开，改小火，盖上锅盖，煮30分钟，可以加入青椒、胡萝卜翻炒至熟，用少许淀粉勾芡，即可。", is_send: 0
   },
   {
     content: "你怎么看安史之乱", is_send: 1
