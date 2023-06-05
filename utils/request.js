@@ -3,7 +3,7 @@ import { Alert } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const api = axios.create({
   baseURL: 'https://movie.jdd001.top', // 设置基础URL
-  timeout: 5000, // 设置请求超时时间
+  timeout: 500000, // 设置请求超时时间
 });
 
 

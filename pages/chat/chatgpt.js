@@ -41,22 +41,12 @@ function MessageItem(props) {
   const [visible, setVisible] = React.useState(false);
   const RenderToggleButton = () => (
     <View key={index} style={{ display: 'flex', flexDirection: 'row', justifyContent: msg.is_send == 0 ? 'flex-start' : 'flex-end', marginBottom: 10 }}>
-      {props.route.params.type != 2 && msg.is_send == 0 && (
-        <View>
-          <Image
-            style={{ width: 40, height: 40, borderRadius: 100, }}
-            source={Math.random() > 0.5 && require('../../assets/yk.jpg') || require('../../assets/mark.jpg')}
-          />
-        </View>) ||
-        (props.route.params.type != 2 && <View style={{ width: 40, height: 40 }}>
-        </View>)
-      }
       <View style={{ flex: 1, flexDirection: 'row', justifyContent: msg.is_send == 0 && 'flex-start' || 'flex-end' }}>
         <View>
           <View style={{
             padding: 10,
             backgroundColor: msg.is_send == 0 ? 'rgba(0,0,0,0.1)' : '#422DDD',
-            marginLeft: props.route.params.type != 2 ? 20 : 0,
+            marginLeft: 0,
             borderRadius: msg.content?.length > 70 ? 10 : 100,
             borderBottomLeftRadius: msg.is_send == 0 ? 0 : undefined,
             borderBottomRightRadius: msg.is_send == 0 ? undefined : 0,
@@ -104,10 +94,11 @@ function MessageList(props) {
   // chatgpt问答 
   const getChatGptMessage = () => {
     // setMessages(data => [...data, { content: 123, is_send: 0 }]);
-    // saveDB(123, 0);
+    // saveDB(123, 0); 红烧肉怎么做
     post('/api/v1/chat/chatgpt', {
       "prompt": msgValue
     }).then(response => {
+      console.log('response',response);
       // 保存到数据库
       saveDB(response.code == 0 && response.response||response.message, 0);
 
@@ -187,11 +178,14 @@ function MessageList(props) {
         {/* <SmileIcon style={{}} width={30} height={30} fill="#000" /> */}
 
       </View>
-      <Button
+      {
+       msgValue&&<Button
         title={"发送"}
         color="#422DDD"
         onPress={async () => { await saveDB(msgValue); getChatGptMessage(); }}
       />
+      }
+      
     </View>
   </View>
     ;
@@ -240,7 +234,7 @@ const Moments = (props) => {
               />
               <View style={{ marginLeft: 5 }}>
                 <View>
-                  <Text style={{ color: '#000', fontSize: 16 }}>{props.route.params.name} {props.route.params.type != 2 && 'Official Group'}</Text>
+                  <Text style={{ color: '#000', fontSize: 16 }}>{props.route.params.name}</Text>
                 </View>
                 <View style={{ flexDirection: 'row' }}>
                   <Text style={{ color: '#000', fontSize: 8, }}>今日已有{limit.max_daily_call_count - limit.daily_left_call_count}次，</Text>
