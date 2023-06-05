@@ -10,8 +10,9 @@ export async function queryMessage(group_id, timestamp, callback) {
     }
     const userID = await AsyncStorage.getItem('user_id');
     const sqlite = SQLite.getInstance();
-    const results = await sqlite.executeSql(`SELECT * FROM "chatgpt_${userID}" WHERE "group_id" = ? AND "timestamp" < ? ORDER BY "timestamp" DESC LIMIT 10`, [group_id, timestamp]);
+    const results = await sqlite.executeSql(`SELECT * FROM "chatgpt" WHERE "group_id" = ? AND "timestamp" < ? ORDER BY "timestamp" DESC LIMIT 10`, [group_id, timestamp]);
     const messages = [];
+
     for (let i = results.rows.length - 1; i >= 0; i--) {
         const message = results.rows.item(i);
         messages.push(message);
@@ -25,14 +26,14 @@ export async function queryMessage(group_id, timestamp, callback) {
 export async function queryLastMessage() {
     const userID = await AsyncStorage.getItem('user_id');
     const sqlite = SQLite.getInstance();
-    const results = await sqlite.executeSql(`SELECT * FROM "chatgpt_${userID}" ORDER BY "timestamp" DESC limit 1`);
+    const results = await sqlite.executeSql(`SELECT * FROM "chatgpt" ORDER BY "timestamp" DESC limit 1`);
     return results.rows.item(0);
 }
 
 export async function addMessage(message, callback) {
     const userID = await AsyncStorage.getItem('user_id');
     const sqlite = SQLite.getInstance();
-    const results = await sqlite.executeSql(`INSERT into "chatgpt_${userID}" VALUES (?,?,?,?,?,?,?)`,
+    const results = await sqlite.executeSql(`INSERT into "chatgpt" VALUES (?,?,?,?,?,?,?)`,
         [message.id, message.state, message.timestamp, message.group_id, message.imtp_user_id, message.is_send, message.content],
     );
     if (callback) {

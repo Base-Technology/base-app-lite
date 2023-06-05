@@ -14,7 +14,6 @@ export const get = async (url, params) => {
     // 在请求中添加默认的Authorization头部参数
     api.defaults.headers.common['Authorization'] = 'Bearer ' + token;
     const response = await api.get(url, { params });
-    console.log('responsedatadatadatadata', response.data);
     return response.data;
   } catch (error) {
     // 处理请求错误
@@ -29,6 +28,7 @@ export const post = async (url, data) => {
     const token = await AsyncStorage.getItem('token')
     // 在请求中添加默认的Authorization头部参数
     api.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+   console.log('token',token);
     const response = await api.post(url, data);
     return response.data;
   } catch (error) {

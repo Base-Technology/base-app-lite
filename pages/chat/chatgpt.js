@@ -30,10 +30,8 @@ import ForwardIcon from '../../assets/icon_forward.svg';
 import DeleteIcon from '../../assets/icon_delete.svg';
 import SelectIcon from '../../assets/icon_select.svg';
 import { get, post } from '../../utils/request';
-import { queryMessage } from '../../database/message';
 import moment from 'moment';
-import IMTP from '../../imtp/service';
-import { addMessage } from '../../database/message';
+import { addMessage, queryMessage } from '../../database/chatgpt';
 import uuid from 'react-native-uuid';
 const dw = Dimensions.get('window').width;
 const dh = Dimensions.get('window').height;
@@ -59,7 +57,7 @@ function MessageItem(props) {
             padding: 10,
             backgroundColor: msg.is_send == 0 ? 'rgba(0,0,0,0.1)' : '#422DDD',
             marginLeft: props.route.params.type != 2 ? 20 : 0,
-            borderRadius: msg.content.length > 70 ? 10 : 100,
+            borderRadius: msg.content?.length > 70 ? 10 : 100,
             borderBottomLeftRadius: msg.is_send == 0 ? 0 : undefined,
             borderBottomRightRadius: msg.is_send == 0 ? undefined : 0,
           }}>
@@ -88,104 +86,47 @@ function MessageItem(props) {
 }
 const ItemMessage = React.memo(MessageItem);
 function MessageList(props) {
-  const [value, onChangeText] = React.useState('');
+  // 发送的文字
+  const [msgValue, setMsgValue] = useState();
+  // 消息列表
+  const [messages, setMessages] = useState();
 
-  const [messages, changeMessages] = React.useState([{
-    content: "红烧肉怎么做", is_send: 1
-  }, {
-    content: "红烧肉怎么做\n\n一、材料准备：\n\n1、猪里脊肉500克；\n\n2、青椒、胡萝卜各一个；\n\n3、生姜、葱各适量；\n\n4、料酒、盐、酱油、淀粉、白糖、老抽各适量；\n\n二、烹饪步骤：\n\n1.将猪里脊肉切成大块，放入盆中，加入料酒、生姜、葱末、半匙盐、酱油、淀粉、白糖、老抽腌制10分钟。\n\n2.取一个炒锅，加入适量的油，烧至六成热，放入腌制好的猪肉，煎至两面金黄。\n\n3.把煎好的猪肉捞出，放入清水中洗净，放入锅中，加入料酒、酱油、白糖、老抽、淀粉、半杯水，烧开，改小火，盖上锅盖，煮30分钟，可以加入青椒、胡萝卜翻炒至熟，用少许淀粉勾芡，即可。", is_send: 0
-  },
-  {
-    content: "你怎么看安史之乱", is_send: 1
-  }, {
-    content: "你怎么看安史之乱", is_send: 0
-  },
-  {
-    content: "你怎么看安史之乱", is_send: 1
-  }, {
-    content: "你怎么看安史之乱", is_send: 0
-  },
-  {
-    content: "你怎么看安史之乱", is_send: 1
-  }, {
-    content: "你怎么看安史之乱", is_send: 0
-  },
-  {
-    content: "你怎么看安史之乱", is_send: 1
-  }, {
-    content: "你怎么看安史之乱", is_send: 0
-  },
-  {
-    content: "你怎么看安史之乱", is_send: 1
-  }, {
-    content: "你怎么看安史之乱", is_send: 0
-  },
-  {
-    content: "你怎么看安史之乱", is_send: 1
-  }, {
-    content: "你怎么看安史之乱", is_send: 0
-  },
-  {
-    content: "你怎么看安史之乱", is_send: 1
-  }, {
-    content: "你怎么看安史之乱", is_send: 0
-  },
-  {
-    content: "你怎么看安史之乱", is_send: 1
-  }, {
-    content: "你怎么看安史之乱", is_send: 0
-  },
-  {
-    content: "你怎么看安史之乱", is_send: 1
-  }, {
-    content: "你怎么看安史之乱", is_send: 0
-  },
-  {
-    content: "你怎么看安史之乱", is_send: 1
-  }, {
-    content: "你怎么看安史之乱", is_send: 0
-  },
-  {
-    content: "你怎么看安史之乱", is_send: 1
-  }, {
-    content: "你怎么看安史之乱", is_send: 0
-  }]);
+  // 列表滚动使用
   const scrollViewRef = useRef(null);
-
   const scrollToBottom = () => {
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollToEnd({ animated: true });
     }
   };
-
   const handleContentSizeChange = (contentWidth, contentHeight) => {
-    // const scrollViewHeight = scrollViewRef.current?.layoutMeasurement.height;
-    // if (scrollViewHeight && contentHeight > scrollViewHeight) {
     scrollToBottom();
-    // }
   };
-  if (!messages) {
-    queryMessage("chatgpt", undefined, (msgs) => {
-      changeMessages(msgs);
-    });
-  }
-
-
-  // /api/v1/chat/chatgpt
+  // chatgpt问答 
   const getChatGptMessage = () => {
+    // setMessages(data => [...data, { content: 123, is_send: 0 }]);
+    // saveDB(123, 0);
     post('/api/v1/chat/chatgpt', {
-      "prompt": value
+      "prompt": msgValue
     }).then(response => {
-      console.log('response', response);
-      messages.push(msg);
-      changeMessages(messages);
-      onChangeText('');
-      // setLimit(response.total_token_left_count);
+      // 保存到数据库
+      saveDB(response.code == 0 && response.response||response.message, 0);
+
     })
   }
-  const wait = (timeout) => {
-    return new Promise(resolve => {
-      setTimeout(resolve, timeout);
+  // 保存数据库
+  const saveDB = async (content, is_send = 1) => {
+    const requestID = uuid.v4();
+    await addMessage({
+      id: requestID,
+      state: 0,
+      timestamp: moment().valueOf(),
+      group_id: "chatgpt",
+      imtp_user_id: "",
+      is_send: is_send,
+      content: content,
+    }, (msg) => {
+      setMessages(data => [...data, msg]);
+      setMsgValue('');
     });
   }
   const [refreshing, setRefreshing] = React.useState(false);
@@ -201,16 +142,20 @@ function MessageList(props) {
       for (let i = msgs.length - 1; i >= 0; i--) {
         messages.unshift(msgs[i]);
       }
-      changeMessages(messages);
+      setMessages(messages);
       setRefreshing(false);
     });
-
-    // wait(2000).then(() => {
-    //   setRefreshing(false);
-
-    // });
-
   }, [messages]);
+
+  // 初始化
+  useEffect(() => {
+    queryMessage("chatgpt", undefined, (msgs) => {
+      console.log('reschatgptponse', msgs);
+      setMessages(msgs);
+    });
+  }, [])
+
+  useEffect(() => console.log('msgValue', msgValue), [msgValue]);
   return <View style={{ flex: 1 }}>
     <View style={{ flex: 1 }}>
       <ScrollView
@@ -235,36 +180,18 @@ function MessageList(props) {
       <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, padding: 10, borderRadius: 100, backgroundColor: 'rgba(0,0,0,0.1)', height: 40, marginRight: 10 }}>
         <TextInput
           style={{ height: 40, borderColor: '#000', color: '#000', flex: 1 }}
-          onChangeText={text => onChangeText(text)}
-          value={value}
+          onChangeText={text => setMsgValue(text)}
+          value={msgValue}
           placeholder='说点什么吧'
         />
         {/* <SmileIcon style={{}} width={30} height={30} fill="#000" /> */}
 
       </View>
       <Button
-        title="发送"
+        title={"发送"}
         color="#422DDD"
-        onPress={async () => {
-          const requestID = uuid.v4();
-          await addMessage({
-            id: requestID,
-            state: 0,
-            timestamp: moment().valueOf(),
-            group_id: "chatgpt",
-            imtp_user_id: "",
-            is_send: 1,
-            content: value,
-          }, (msg) => {
-            messages.push(msg);
-            changeMessages(messages);
-            onChangeText('');
-          });
-
-          getChatGptMessage();
-        }}
+        onPress={async () => { await saveDB(msgValue); getChatGptMessage(); }}
       />
-
     </View>
   </View>
     ;
@@ -281,12 +208,12 @@ const Moments = (props) => {
   };
   useEffect(() => {
     getChatGptLimit();
-  })
+  }, [])
   // /api/v1/chat/chatgpt_limit
   const getChatGptLimit = () => {
     get('/api/v1/chat/chatgpt_limit').then(response => {
       console.log('response', response);
-      setLimit(response.total_token_left_count);
+      setLimit(response);
     })
   }
   return (
@@ -316,7 +243,8 @@ const Moments = (props) => {
                   <Text style={{ color: '#000', fontSize: 16 }}>{props.route.params.name} {props.route.params.type != 2 && 'Official Group'}</Text>
                 </View>
                 <View style={{ flexDirection: 'row' }}>
-                  <Text style={{ color: '#000', fontSize: 8, }}>剩余 <Text style={{ fontSize: 8, }}>{limit} 条</Text></Text>
+                  <Text style={{ color: '#000', fontSize: 8, }}>今日已有{limit.max_daily_call_count - limit.daily_left_call_count}次，</Text>
+                  <Text style={{ color: '#000', fontSize: 8, }}>今日剩余{limit.daily_left_call_count}次 </Text>
                 </View>
               </View>
             </View>

@@ -51,8 +51,17 @@ export default class SQLite {
             "imtp_user_id" TEXT,
             PRIMARY KEY ("id")
           )`);
+          await this.executeSql(`CREATE TABLE IF NOT EXISTS "chatgpt" (
+            "id" text NOT NULL,
+            "state" integer,
+            "timestamp" DATE,
+            "group_id" text,
+            "imtp_user_id" text,
+            "is_send" integer,
+            "content" text,
+            PRIMARY KEY ("id")
+          )`);
     }
-
     async createMessageTable(userID) {
         await this.executeSql(`CREATE TABLE IF NOT EXISTS "message_${userID}" (
             "id" text NOT NULL,
