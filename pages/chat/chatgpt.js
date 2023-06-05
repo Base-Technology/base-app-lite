@@ -237,7 +237,7 @@ const Moments = (props) => {
                   <Text style={{ color: '#000', fontSize: 16 }}>{props.route.params.name}</Text>
                 </View>
                 <View style={{ flexDirection: 'row' }}>
-                  <Text style={{ color: '#000', fontSize: 8, }}>今日已有{limit.max_daily_call_count - limit.daily_left_call_count}次，</Text>
+                  <Text style={{ color: '#000', fontSize: 8, }}>今日已用{limit.max_daily_call_count - limit.daily_left_call_count}次，</Text>
                   <Text style={{ color: '#000', fontSize: 8, }}>今日剩余{limit.daily_left_call_count}次 </Text>
                 </View>
               </View>
