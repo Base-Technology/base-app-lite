@@ -17,7 +17,9 @@ export async function queryMessage(group_id, timestamp, callback) {
     for (let i = results.rows.length - 1; i >= 0; i--) {
         const message = results.rows.item(i);
         if (message.is_send == 0 && !message.username) {
-            await queryUserByIMTPUserID(message.imtp_user_id);
+            const user = await queryUserByIMTPUserID(message.imtp_user_id);
+            message.username = user.username;
+            message.avatar = user.avatar;
         }
         messages.push(message);
     }
