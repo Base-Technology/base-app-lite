@@ -27,9 +27,9 @@ export default class IMTP {
             this.address = wallet.address;
             const signature = await wallet.signMessage("hello");
             this.config = {
-                apiServer: "http://119.45.212.83:10002",
+                apiServer: "https://base.jdd001.top:9203",
                 wsServer: "ws://119.45.212.83:10001",
-                appServer: "http://119.45.212.83:8001",
+                appServer: "https://base.jdd001.top:9201",
                 loginParams: {
                     signature: signature,
                     senderAddress: wallet.address,
