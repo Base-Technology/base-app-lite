@@ -50,7 +50,6 @@ const dh = Dimensions.get('window').height;
 function MessageItem(props) {
   const { msg, index } = props;
   const [visible, setVisible] = React.useState(false);
-  console.log(msg.avatar);
   const RenderToggleButton = () => (
     <View key={index} style={{ display: 'flex', flexDirection: 'row', justifyContent: msg.is_send == 0 ? 'flex-start' : 'flex-end', marginBottom: 10 }}>
       {msg.is_send == 0 && (
@@ -178,7 +177,6 @@ function MessageList(props) {
     setRefreshing(true);
 
     let firstTimestamp = undefined;
-    console.log(messages);
     if (messages.length > 0) {
       firstTimestamp = messages[0].timestamp;
     }
