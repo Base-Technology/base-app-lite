@@ -111,7 +111,9 @@ export default class IMTP {
                 id: msg.clientMsgID,
                 state: 0,
                 timestamp: msg.createTime,
-                is_send: 1,
+                group_id: msg.groupID,
+                imtp_user_id: "",
+                is_send: msg.sendID == `01_1_${this.address.toLowerCase()}` ? 1 : 0,
                 content: msg.content,
             };
             await addMessage(dbMessage, callback);
