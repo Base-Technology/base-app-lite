@@ -36,6 +36,16 @@ export async function queryLastMessage() {
     return results.rows.item(0);
 }
 
+export async function queryLastMessageByGroupID(group_id) {
+    if (!group_id) {
+        group_id = await AsyncStorage.getItem('group_id');
+    }
+    const userID = await AsyncStorage.getItem('user_id');
+    const sqlite = SQLite.getInstance();
+    const results = await sqlite.executeSql(`SELECT * FROM "message_${userID}" WHERE "group_id" = ? ORDER BY "timestamp" DESC limit 1`, [group_id]);
+    return results.rows.item(0);
+}
+
 export async function addMessage(message, callback) {
     const userID = await AsyncStorage.getItem('user_id');
     const sqlite = SQLite.getInstance();

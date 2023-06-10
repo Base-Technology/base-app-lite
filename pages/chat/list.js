@@ -10,6 +10,9 @@ import { get, post } from '../../utils/request';
 import Text from "../../components/BaseText";
 import BasePopup from "../../components/BasePopup";
 import { useQuery, gql } from '@apollo/client';
+import { queryLastMessageByGroupID } from '../../database/message';
+import { queryLastMessage } from '../../database/chatgpt';
+import moment from 'moment';
 
 const GET_DATA = gql`
 {
@@ -22,23 +25,23 @@ const dw = Dimensions.get('window').width;
 const dh = Dimensions.get('window').height;
 const DATA = [
 
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba611',
-    name: 'ChatGPT',
-    type: 1,
-    content: '...',
-    route: 'ChatGpt',
-    header: 'https://bf.jdd001.top/cryptologos/chatgpt.png'
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba6111',
-    name: '鲸馆小张',
-    type: 2,
-    content: '...',
-    header: 'https://bf.jdd001.top/cryptologos/zy.png'
-  }
+  // {
+  //   id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba611',
+  //   name: 'ChatGPT',
+  //   type: 1,
+  //   content: '...',
+  //   route: 'ChatGpt',
+  //   header: 'https://bf.jdd001.top/cryptologos/chatgpt.png'
+  // },
+  // {
+  //   id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba6111',
+  //   name: '鲸馆小张',
+  //   type: 2,
+  //   content: '...',
+  //   header: 'https://bf.jdd001.top/cryptologos/zy.png'
+  // }
 ];
-const Item = ({ name, content, navigation, header, type, route, onShowInfo }) => {
+const Item = ({ name, content, timestamp, navigation, header, type, route, onShowInfo }) => {
 
   return (
     <TouchableHighlight
@@ -55,15 +58,15 @@ const Item = ({ name, content, navigation, header, type, route, onShowInfo }) =>
               <View style={{ width: 50, height: 50, borderRadius: 100, backgroundColor: '#422DDD' }}></View>}
           </View>
           <View style={{ flex: 1 }}>
-            <View style={{flexDirection:'row'}}>
-             {type==2&& <GroupIcon width={20} height={20} fill="#000" />}
+            <View style={{ flexDirection: 'row' }}>
+              {type == 2 && <GroupIcon width={20} height={20} fill="#000" />}
               <Text style={styles.title}>{name}</Text>
             </View>
             <Text numberOfLines={1} ellipsizeMode="tail" style={styles.content}>{content}</Text>
           </View>
         </View>
         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start' }}>
-          <Text style={styles.time}>9:08</Text>
+          <Text style={styles.time}>{timestamp ? moment.unix(timestamp / 1000).format('HH:mm') : ''}</Text>
         </View>
       </View>
     </TouchableHighlight >
@@ -113,22 +116,32 @@ const Chat = ({ navigation }) => {
 
 
   </View>
-  const getList = () => {
-    // /api/v1/group/user
-    get('/api/v1/group/user').then(response => {
-      // console.log('/api/v1/group/user', response);
-      if (response.code == 0 && response.data.length > 0) {
-        setListGroup(data => {
-          console.log(data);
-          return [...data, {
-            id: response.data[0].id,
-            name: response.data[0].school,
-            type: 2,
-            content: '...',
-          }];
-        });
-      }
-    })
+  const getList = async () => {
+    const chatgptMsg = await queryLastMessage();
+    let d = [{
+      id: 'ChatGpt',
+      name: 'ChatGPT',
+      type: 1,
+      content: chatgptMsg?.content,
+      timestamp: chatgptMsg?.timestamp,
+      route: 'ChatGpt',
+      header: 'https://bf.jdd001.top/cryptologos/chatgpt.png'
+    }];
+    const groupMsg = await queryLastMessageByGroupID();
+    const response = await get('/api/v1/group/user');
+    if (response.code == 0 && response.data.length > 0) {
+      d.push({
+        id: response.data[0].id,
+        name: response.data[0].school,
+        type: 2,
+        content: groupMsg?.content,
+        timestamp: groupMsg?.timestamp,
+      });
+    }
+    setListGroup(data => {
+      console.log(data);
+      return [...data, ...d];
+    });
   }
   return (
     <SafeAreaView style={styles.container}>
