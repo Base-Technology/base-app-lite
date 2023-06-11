@@ -118,6 +118,7 @@ function MessageList(props) {
     }, (msg) => {
       setMessages(data => [...data, msg]);
       setMsgValue('');
+      props.route.params.handler();
     });
   }
   const [refreshing, setRefreshing] = React.useState(false);

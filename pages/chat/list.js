@@ -43,12 +43,12 @@ const DATA = [
   //   header: 'https://bf.jdd001.top/cryptologos/zy.png'
   // }
 ];
-const Item = ({ id, imtpUserId, name, content, timestamp, navigation, header, type, route, onShowInfo }) => {
+const Item = ({ id, imtpUserId, name, content, timestamp, navigation, header, type, route, handler, onShowInfo }) => {
 
   return (
     <TouchableHighlight
       underlayColor="rgba(255, 255, 255, 1)"
-      onPress={() => navigation.navigate(route || 'Doctor', { id, imtpUserId, name, header, type })}
+      onPress={() => navigation.navigate(route || 'Doctor', { id, imtpUserId, name, header, type, handler })}
     >
       <View style={styles.item}>
         <View style={styles.itemc}>
@@ -135,7 +135,8 @@ const Chat = ({ navigation }) => {
       content: chatgptMsg?.content,
       timestamp: chatgptMsg?.timestamp,
       route: 'ChatGpt',
-      header: 'https://bf.jdd001.top/cryptologos/chatgpt.png'
+      header: 'https://bf.jdd001.top/cryptologos/chatgpt.png',
+      handler: getList,
     }];
     const groupMsg = await queryLastMessageByGroupID();
     const response = await get('/api/v1/group/user');
