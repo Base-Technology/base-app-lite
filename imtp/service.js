@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 import axios from 'axios';
 import OpenIMSDKRN, { OpenIMEmitter } from 'open-im-sdk-rn';
 import RNFS, { stat } from 'react-native-fs';
-import { addMessage, queryLastMessage } from '../database/message';
+import { addMessage, queryLastMessage, queryFriendsLastMessage } from '../database/message';
 import { queryUserByIMTPUserID } from '../database/user';
 
 export default class IMTP {
@@ -28,9 +28,9 @@ export default class IMTP {
             this.listener = [];
             const signature = await wallet.signMessage("hello");
             this.config = {
-                apiServer: "https://base.jdd001.top:9203",
-                wsServer: "wss://base.jdd001.top:9202",
-                appServer: "https://base.jdd001.top:9201",
+                apiServer: "http://119.45.212.83:10002",
+                wsServer: "ws://119.45.212.83:10001",
+                appServer: "http://119.45.212.83:8001",
                 loginParams: {
                     signature: signature,
                     senderAddress: wallet.address,
@@ -52,7 +52,6 @@ export default class IMTP {
                 OpenIMEmitter.addListener('onRecvNewMessage', (v) => {
                     this.onRecvNewMessage(v);
                 });
-                await this.loadHistoryMessage();
             } catch (e) {
                 this.initCompleted = false;
                 console.log(e);
@@ -113,11 +112,12 @@ export default class IMTP {
                 state: 0,
                 timestamp: msg.createTime,
                 group_id: msg.groupID,
-                imtp_user_id: "",
+                imtp_user_id: msg.recvID,
                 is_send: msg.sendID == `01_1_${this.address.toLowerCase()}` ? 1 : 0,
                 content: msg.content,
             };
-            await addMessage(dbMessage, callback);
+            await this.handleMessage(msg);
+            // await addMessage(dbMessage, callback);
         } catch (e) {
             console.log(e);
         }
@@ -126,19 +126,29 @@ export default class IMTP {
     async loadHistoryMessage() {
         try {
             await this.login();
-            const lastMessage = await queryLastMessage();
-            const options = {
-                groupID: '',
-                startClientMsgID: lastMessage.id,
-                count: 10,
-                userID: `01_1_${this.address.toLowerCase()}`,
-                conversationID: "",
-            }
-            const data = await OpenIMSDKRN.getHistoryMessageListReverse(options, this.uuid());
-            const msgs = JSON.parse(data);
-            for (let i = 0; i < msgs.length; i++) {
-                const msg = msgs[i];
-                await this.handleMessage(msg);
+
+            for (let flag = true; flag;) {
+                flag = false;
+                const friendMsgs = await queryFriendsLastMessage();
+                for (let i = 0; i < friendMsgs.length; i++) {
+                    const lastMessage = friendMsgs[i];
+                    const options = {
+                        groupID: '',
+                        startClientMsgID: lastMessage?.msg_id,
+                        count: 10,
+                        userID: lastMessage.imtp_user_id,
+                        conversationID: "",
+                    }
+                    const data = await OpenIMSDKRN.getHistoryMessageListReverse(options, this.uuid());
+                    const msgs = JSON.parse(data);
+                    if (msgs.length != 0) {
+                        flag = true;
+                    }
+                    for (let i = 0; i < msgs.length; i++) {
+                        const msg = msgs[i];
+                        await this.handleMessage(msg);
+                    }
+                }
             }
         } catch (e) {
             console.log(e);
@@ -155,7 +165,7 @@ export default class IMTP {
                 state: 0,
                 timestamp: msg.createTime,
                 group_id: msg.groupID,
-                imtp_user_id: msg.sendID == `01_1_${this.address.toLowerCase()}` ? "" : msg.sendID,
+                imtp_user_id: msg.sendID == `01_1_${this.address.toLowerCase()}` ? msg.recvID : msg.sendID,
                 is_send: msg.sendID == `01_1_${this.address.toLowerCase()}` ? 1 : 0,
                 content: msg.content,
             };
@@ -196,7 +206,7 @@ export default class IMTP {
         try {
             await this.login();
             let listener = [];
-            this.listener.forEach(l => (l.id == id && listener.push(l)));
+            this.listener.forEach(l => (l.id != id && listener.push(l)));
             this.listener = listener;
         } catch (e) {
             console.log(e);

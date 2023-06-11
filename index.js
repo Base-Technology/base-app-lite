@@ -9,6 +9,7 @@ import IMTP from './imtp/service';
 import { get } from './utils/request';
 import { createMessageTable } from './database/message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { loadFriends } from './database/friend';
 
 // AppRegistry.registerComponent(appName, () => App);
 
@@ -21,8 +22,10 @@ AppRegistry.registerRunnable(appName, async initialProps => {
         }
         if (logined) {
             const userID = await AsyncStorage.getItem('user_id');
-            createMessageTable(userID);
+            await createMessageTable(userID);
+            await loadFriends();
             await IMTP.getInstance().init();
+            await IMTP.getInstance().loadHistoryMessage();
         }
         AppRegistry.registerComponent(appName, () => App(logined));
         AppRegistry.runApplication(appName, initialProps);

@@ -39,7 +39,7 @@ import SelectIcon from '../../assets/icon_select.svg';
 import GroupIcon from '../../assets/icon_group.svg';
 import ArrowRightIcon from '../../assets/icon_arrow_right.svg';
 import GroupTypeIcon from '../../assets/icon_group_type.svg';
-import { queryMessage, addMessage } from '../../database/message';
+import { queryGroupMessage, queryFriendMessage, addMessage } from '../../database/message';
 import moment from 'moment';
 import IMTP from '../../imtp/service';
 import Group from "../me/group";
@@ -179,7 +179,7 @@ function MessageList(props) {
 
   const newMessageHandler = async (msg) => {
     const groupID = await AsyncStorage.getItem('group_id');
-    if (msg.group_id == groupID) {
+    if (props.route.params.type == 2 && msg.group_id == groupID || props.route.params.type == 3 && msg.imtp_user_id == props.route.params.imtpUserId) {
       handleNewMessage(msg);
     }
   }
@@ -190,12 +190,15 @@ function MessageList(props) {
   });
 
   useEffect(() => {
-    queryMessage(undefined, undefined, (msgs) => {
+    props.route.params.type == 2 && queryGroupMessage(undefined, undefined, (msgs) => {
       changeMessages(msgs);
     });
-    IMTP.getInstance().addListener({ id: 'group', handler: newMessageHandler });
+    props.route.params.type == 3 && queryFriendMessage(props.route.params.imtpUserId, undefined, (msgs) => {
+      changeMessages(msgs);
+    });
+    IMTP.getInstance().addListener({ id: 'detail', handler: newMessageHandler });
     return () => {
-      IMTP.getInstance().removeListener('group');
+      IMTP.getInstance().removeListener('detail');
     }
   }, []);
   const renderPlacementItem = (title) => (
@@ -214,7 +217,14 @@ function MessageList(props) {
     if (messages.length > 0) {
       firstTimestamp = messages[0].timestamp;
     }
-    queryMessage(undefined, firstTimestamp, (msgs) => {
+    props.route.params.type == 2 && queryGroupMessage(undefined, firstTimestamp, (msgs) => {
+      for (let i = msgs.length - 1; i >= 0; i--) {
+        messages.unshift(msgs[i]);
+      }
+      changeMessages(messages);
+      setRefreshing(false);
+    });
+    props.route.params.type == 3 && queryFriendMessage(props.route.params.imtpUserId, firstTimestamp, (msgs) => {
       for (let i = msgs.length - 1; i >= 0; i--) {
         messages.unshift(msgs[i]);
       }
@@ -265,8 +275,8 @@ function MessageList(props) {
           onPress={async () => {
             const groupID = await AsyncStorage.getItem('group_id');
             IMTP.getInstance().sendMessage({
-              recvID: "",
-              groupID: groupID,
+              recvID: props.route.params.type == 3 ? props.route.params.imtpUserId : "",
+              groupID: props.route.params.type == 2 ? groupID : "",
               content: value,
             }, (msg) => {
               messages.push(msg);
@@ -390,7 +400,7 @@ const Moments = (props) => {
               />
               <View style={{ marginLeft: 5 }}>
                 <View>
-                  <Text style={{ color: '#000', fontSize: 16 }}>{props.route.params.name} {props.route.params.type != 2 && 'Official Group'}</Text>
+                  <Text style={{ color: '#000', fontSize: 16 }}>{props.route.params.name} {props.route.params.type == 1 && 'Official Group'}</Text>
                 </View>
                 <View style={{ flexDirection: 'row' }}>
                   <Text style={{ color: '#000', fontSize: 8, }}>$999 <Text style={{ fontSize: 8, }}>Treasury</Text></Text>

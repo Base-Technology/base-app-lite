@@ -7,6 +7,7 @@ import Text from "../../components/BaseText";
 import ArrowRightIcon from "../../assets/icon_arrow_right.svg";
 import { createMessageTable } from "../../database/message";
 import IMTP from '../../imtp/service';
+import { loadFriends } from "../../database/friend";
 
 import { post } from '../../utils/request';
 
@@ -31,7 +32,9 @@ const Login = ({ navigation }) => {
           await AsyncStorage.setItem('private_key', response.private_key);
           await AsyncStorage.setItem('group_id', response.group_id);
           await createMessageTable(response.user_id);
+          await loadFriends();
           await IMTP.getInstance().init();
+          await IMTP.getInstance().loadHistoryMessage();
           // navigation.navigate('Chat');
           navigation.dispatch(
             CommonActions.reset({

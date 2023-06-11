@@ -14,6 +14,7 @@ import { queryLastMessageByGroupID } from '../../database/message';
 import { queryLastMessage } from '../../database/chatgpt';
 import moment from 'moment';
 import IMTP from '../../imtp/service';
+import { queryFriendsLastMessage } from '../../database/message';
 
 const GET_DATA = gql`
 {
@@ -42,12 +43,12 @@ const DATA = [
   //   header: 'https://bf.jdd001.top/cryptologos/zy.png'
   // }
 ];
-const Item = ({ name, content, timestamp, navigation, header, type, route, onShowInfo }) => {
+const Item = ({ id, imtpUserId, name, content, timestamp, navigation, header, type, route, onShowInfo }) => {
 
   return (
     <TouchableHighlight
       underlayColor="rgba(255, 255, 255, 1)"
-      onPress={() => navigation.navigate(route || 'Doctor', { name, header, type })}
+      onPress={() => navigation.navigate(route || 'Doctor', { id, imtpUserId, name, header, type })}
     >
       <View style={styles.item}>
         <View style={styles.itemc}>
@@ -147,6 +148,18 @@ const Chat = ({ navigation }) => {
         timestamp: groupMsg?.timestamp,
       });
     }
+    const friendMsgs = await queryFriendsLastMessage();
+    friendMsgs.forEach((msg) => {
+      data.push({
+        id: msg.id,
+        imtpUserId: msg.imtp_user_id,
+        name: msg.username,
+        type: 3,
+        content: msg?.content,
+        timestamp: msg?.timestamp,
+        header: msg.avatar,
+      });
+    });
     setListGroup(data);
   }
   return (

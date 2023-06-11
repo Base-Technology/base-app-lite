@@ -51,7 +51,7 @@ export default class SQLite {
             "imtp_user_id" TEXT,
             PRIMARY KEY ("id")
           )`);
-          await this.executeSql(`CREATE TABLE IF NOT EXISTS "chatgpt" (
+        await this.executeSql(`CREATE TABLE IF NOT EXISTS "chatgpt" (
             "id" text NOT NULL,
             "state" integer,
             "timestamp" DATE,
@@ -71,6 +71,16 @@ export default class SQLite {
             "imtp_user_id" text,
             "is_send" integer,
             "content" text,
+            PRIMARY KEY ("id")
+          )`);
+        await this.executeSql(`CREATE TABLE IF NOT EXISTS "friend_${userID}" (
+            "id" integer NOT NULL,
+            "username" TEXT,
+            "area" TEXT,
+            "school" TEXT,
+            "introduction" TEXT,
+            "avatar" TEXT,
+            "imtp_user_id" TEXT,
             PRIMARY KEY ("id")
           )`);
     }
