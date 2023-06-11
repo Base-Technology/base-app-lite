@@ -13,6 +13,7 @@ import { useQuery, gql } from '@apollo/client';
 import { queryLastMessageByGroupID } from '../../database/message';
 import { queryLastMessage } from '../../database/chatgpt';
 import moment from 'moment';
+import IMTP from '../../imtp/service';
 
 const GET_DATA = gql`
 {
@@ -99,12 +100,20 @@ const Chat = ({ navigation }) => {
   const [placementIndex, setPlacementIndex] = React.useState(new IndexPath(4));
   const placement = placements[placementIndex.row];
 
+  const newMessageHandler = async (msg) => {
+    getList();
+  }
+
   React.useEffect(() => {
     setTimeout(() => {
       SplashScreen.hide();
 
     }, 200);
     getList();
+    IMTP.getInstance().addListener({ id: 'list', handler: newMessageHandler });
+    return () => {
+      IMTP.getInstance().removeListener('list');
+    }
   }, []);
   const MenuItemCustomFrist = ({ title, children }) => <View style={{ padding: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
     <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: 3, paddingHorizontal: 10, paddingVertical: 5, justifyContent: 'center', }}>
@@ -118,7 +127,7 @@ const Chat = ({ navigation }) => {
   </View>
   const getList = async () => {
     const chatgptMsg = await queryLastMessage();
-    let d = [{
+    let data = [{
       id: 'ChatGpt',
       name: 'ChatGPT',
       type: 1,
@@ -130,7 +139,7 @@ const Chat = ({ navigation }) => {
     const groupMsg = await queryLastMessageByGroupID();
     const response = await get('/api/v1/group/user');
     if (response.code == 0 && response.data.length > 0) {
-      d.push({
+      data.push({
         id: response.data[0].id,
         name: response.data[0].school,
         type: 2,
@@ -138,10 +147,7 @@ const Chat = ({ navigation }) => {
         timestamp: groupMsg?.timestamp,
       });
     }
-    setListGroup(data => {
-      console.log(data);
-      return [...data, ...d];
-    });
+    setListGroup(data);
   }
   return (
     <SafeAreaView style={styles.container}>

@@ -1,4 +1,4 @@
-import React, { Component, useRef, useState } from 'react';
+import React, { Component, useRef, useState, useEffect, useCallback } from 'react';
 import {
   StyleSheet,
   ScrollView,
@@ -46,6 +46,23 @@ import Group from "../me/group";
 import Drawer from './Drawer'
 const dw = Dimensions.get('window').width;
 const dh = Dimensions.get('window').height;
+
+const useSyncCallback = (callback) => {
+  const [proxyState, setProxyState] = useState({ current: false });
+  const [params, setParams] = useState(undefined);
+  const func = useCallback((...params) => {
+    setParams(params);
+    setProxyState({ current: true });
+  }, [proxyState]);
+  useEffect(() => {
+    if (proxyState.current === true) setProxyState({ current: false });
+  }, [proxyState]);
+  useEffect(() => {
+    proxyState.current && callback(...params);
+  });
+  return func;
+}
+
 // Drawer组件
 function MessageItem(props) {
   const { msg, index } = props;
@@ -159,11 +176,28 @@ function MessageList(props) {
     scrollToBottom();
     // }
   };
-  if (!messages) {
+
+  const newMessageHandler = async (msg) => {
+    const groupID = await AsyncStorage.getItem('group_id');
+    if (msg.group_id == groupID) {
+      handleNewMessage(msg);
+    }
+  }
+
+  const handleNewMessage = useSyncCallback((msg) => {
+    messages.push(msg);
+    changeMessages(messages);
+  });
+
+  useEffect(() => {
     queryMessage(undefined, undefined, (msgs) => {
       changeMessages(msgs);
     });
-  }
+    IMTP.getInstance().addListener({ id: 'group', handler: newMessageHandler });
+    return () => {
+      IMTP.getInstance().removeListener('group');
+    }
+  }, []);
   const renderPlacementItem = (title) => (
     <Text>ddd</Text>
   );

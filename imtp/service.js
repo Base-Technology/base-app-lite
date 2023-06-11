@@ -6,7 +6,7 @@ import axios from 'axios';
 import OpenIMSDKRN, { OpenIMEmitter } from 'open-im-sdk-rn';
 import RNFS, { stat } from 'react-native-fs';
 import { addMessage, queryLastMessage } from '../database/message';
-import { queryProfileByID } from '../database/profile';
+import { queryUserByIMTPUserID } from '../database/user';
 
 export default class IMTP {
 
@@ -25,6 +25,7 @@ export default class IMTP {
             const privateKey = await AsyncStorage.getItem('private_key');
             const wallet = new ethers.Wallet(privateKey);
             this.address = wallet.address;
+            this.listener = [];
             const signature = await wallet.signMessage("hello");
             this.config = {
                 apiServer: "https://base.jdd001.top:9203",
@@ -149,7 +150,7 @@ export default class IMTP {
             if (msg.contentType > 105) {
                 return;
             }
-            const message = {
+            let message = {
                 id: msg.clientMsgID,
                 state: 0,
                 timestamp: msg.createTime,
@@ -159,6 +160,14 @@ export default class IMTP {
                 content: msg.content,
             };
             await addMessage(message);
+            if (message.is_send == 0 && !message.username) {
+                const user = await queryUserByIMTPUserID(message.imtp_user_id);
+                message.username = user.username;
+                message.avatar = user.avatar;
+            }
+            for (let i = 0; i < this.listener.length; i++) {
+                await this.listener[i].handler(message);
+            }
         } catch (e) {
             console.log(e);
         }
@@ -169,6 +178,26 @@ export default class IMTP {
         try {
             const msg = JSON.parse(v.data);
             await this.handleMessage(msg);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    async addListener(listener) {
+        try {
+            await this.login();
+            this.listener.push(listener);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    async removeListener(id) {
+        try {
+            await this.login();
+            let listener = [];
+            this.listener.forEach(l => (l.id == id && listener.push(l)));
+            this.listener = listener;
         } catch (e) {
             console.log(e);
         }
